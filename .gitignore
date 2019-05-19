@@ -102,6 +102,7 @@ ENV/
 
 # Cython
 *.c
+*.o
 
 # data dir
 data/
