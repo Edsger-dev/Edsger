@@ -1,5 +1,13 @@
 
+from priority_queue_binary_heap cimport *
+from priority_queue_fibonacci_heap cimport *
 
+import pandas as pd
+from timeit import default_timer as timer
+from libc.stdlib cimport malloc, free
+
+import numpy as np
+cimport numpy as np
 
 cpdef test_01():
     
@@ -285,59 +293,59 @@ cpdef test_peek():
     free_heap(&bheap)
 
 
-cpdef test_decrease():
+# cpdef test_decrease():
     
-    cdef: 
-        BinaryHeap bheap
+#     cdef: 
+#         BinaryHeap bheap
 
 
-    init_heap(&bheap, 4)
-    min_heap_insert(&bheap, 0, 3.0)
-    assert bheap.nodes[0].state == IN_HEAP
-    assert bheap.nodes[1].state == NOT_IN_HEAP
-    assert bheap.nodes[2].state == NOT_IN_HEAP
-    assert bheap.nodes[3].state == NOT_IN_HEAP
-    min_heap_insert(&bheap, 1, 2.0)
-    assert bheap.nodes[0].state == IN_HEAP
-    assert bheap.nodes[1].state == IN_HEAP
-    assert bheap.nodes[2].state == NOT_IN_HEAP
-    assert bheap.nodes[3].state == NOT_IN_HEAP
-    min_heap_insert(&bheap, 2, 1.0)
-    assert bheap.nodes[0].state == IN_HEAP
-    assert bheap.nodes[1].state == IN_HEAP
-    assert bheap.nodes[2].state == IN_HEAP
-    assert bheap.nodes[3].state == NOT_IN_HEAP
-    assert bheap.length == 4
-    assert bheap.size == 3
-    assert peek(&bheap) == 1.0
-    decrease_key_from_node_index(&bheap, 0, 0.0)
-    assert peek(&bheap) == 0.0
-    idx = extract_min(&bheap)
-    assert idx == 0
-    assert peek(&bheap) == 1.0
-    assert bheap.nodes[0].key == 0.0
-    assert bheap.nodes[0].state == SCANNED
-    assert bheap.nodes[1].state == IN_HEAP
-    assert bheap.nodes[2].state == IN_HEAP
-    assert bheap.nodes[3].state == NOT_IN_HEAP
-    decrease_key_from_node_index(&bheap, 1,  0.0)
-    decrease_key_from_node_index(&bheap, 2, -1.0)
-    assert peek(&bheap) == -1.0
-    assert bheap.nodes[1].key ==  0.0
-    assert bheap.nodes[2].key == -1.0
-    decrease_key_from_node_index(&bheap, 1, -2.0)
-    assert peek(&bheap) == -2.0
-    assert bheap.nodes[1].key == -2.0
-    assert bheap.nodes[2].key == -1.0
-    idx = extract_min(&bheap)
-    assert idx == 1
-    assert peek(&bheap) == -1.0
-    assert bheap.nodes[0].state == SCANNED
-    assert bheap.nodes[1].state == SCANNED
-    assert bheap.nodes[2].state == IN_HEAP
-    assert bheap.nodes[3].state == NOT_IN_HEAP
+#     init_heap(&bheap, 4)
+#     min_heap_insert(&bheap, 0, 3.0)
+#     assert bheap.nodes[0].state == IN_HEAP
+#     assert bheap.nodes[1].state == NOT_IN_HEAP
+#     assert bheap.nodes[2].state == NOT_IN_HEAP
+#     assert bheap.nodes[3].state == NOT_IN_HEAP
+#     min_heap_insert(&bheap, 1, 2.0)
+#     assert bheap.nodes[0].state == IN_HEAP
+#     assert bheap.nodes[1].state == IN_HEAP
+#     assert bheap.nodes[2].state == NOT_IN_HEAP
+#     assert bheap.nodes[3].state == NOT_IN_HEAP
+#     min_heap_insert(&bheap, 2, 1.0)
+#     assert bheap.nodes[0].state == IN_HEAP
+#     assert bheap.nodes[1].state == IN_HEAP
+#     assert bheap.nodes[2].state == IN_HEAP
+#     assert bheap.nodes[3].state == NOT_IN_HEAP
+#     assert bheap.length == 4
+#     assert bheap.size == 3
+#     assert peek(&bheap) == 1.0
+#     decrease_key_from_node_index(&bheap, 0, 0.0)
+#     assert peek(&bheap) == 0.0
+#     idx = extract_min(&bheap)
+#     assert idx == 0
+#     assert peek(&bheap) == 1.0
+#     assert bheap.nodes[0].key == 0.0
+#     assert bheap.nodes[0].state == SCANNED
+#     assert bheap.nodes[1].state == IN_HEAP
+#     assert bheap.nodes[2].state == IN_HEAP
+#     assert bheap.nodes[3].state == NOT_IN_HEAP
+#     decrease_key_from_node_index(&bheap, 1,  0.0)
+#     decrease_key_from_node_index(&bheap, 2, -1.0)
+#     assert peek(&bheap) == -1.0
+#     assert bheap.nodes[1].key ==  0.0
+#     assert bheap.nodes[2].key == -1.0
+#     decrease_key_from_node_index(&bheap, 1, -2.0)
+#     assert peek(&bheap) == -2.0
+#     assert bheap.nodes[1].key == -2.0
+#     assert bheap.nodes[2].key == -1.0
+#     idx = extract_min(&bheap)
+#     assert idx == 1
+#     assert peek(&bheap) == -1.0
+#     assert bheap.nodes[0].state == SCANNED
+#     assert bheap.nodes[1].state == SCANNED
+#     assert bheap.nodes[2].state == IN_HEAP
+#     assert bheap.nodes[3].state == NOT_IN_HEAP
 
-    free_heap(&bheap)
+#     free_heap(&bheap)
 
 
 def memory_usage_psutil():

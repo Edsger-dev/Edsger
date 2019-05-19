@@ -53,45 +53,10 @@
 #cython: initializedcheck=False
 
 
-from timeit import default_timer as timer
-
 cimport cython
-
-import numpy as np
-cimport numpy as np
-import pandas as pd
 from libc.stdlib cimport malloc, free
 
-DTYPE = np.float64
-ctypedef np.float64_t DTYPE_t
-
-cdef DTYPE_t INFINITY = np.finfo(dtype=DTYPE).max
-
-
-# tree node #
-# ========= #
-
-cdef enum NodeState:
-   SCANNED = 1
-   NOT_IN_HEAP = 2
-   IN_HEAP = 3
-
-
-cdef struct Node:
-    DTYPE_t key
-    NodeState state
-    unsigned int tree_idx
-
-
-# priority queue #
-# ============== #
-
-cdef struct BinaryHeap:
-    unsigned int length  # number of elements in the array
-    unsigned int size  # number of elements in the heap, stored within the array
-    unsigned int* A  # array storing the binary tree
-    Node* nodes  # array storing the nodes
-
+from priority_queue_binary_heap cimport *
 
 cdef void init_heap(
     BinaryHeap* bheap,

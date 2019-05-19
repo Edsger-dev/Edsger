@@ -14,6 +14,6 @@ ext_modules=[
     Extension("test_heaps", ["test_heaps.pyx"]),
 ]
 setup(
-    ext_modules=cythonize("priority_queue_binary_heap.pyx"),
+    ext_modules=cythonize(ext_modules, compiler_directives={'language_level' : "3"}),
     include_dirs=[numpy.get_include()],
 )

@@ -6,32 +6,20 @@
  License: BSD, (C) 2011
 """
 
-import numpy as np
-cimport numpy as np
+cimport cython
 
-DTYPE = np.float64
-ctypedef np.float64_t DTYPE_t
+from priority_queue_fibonacci_heap cimport *
 
-
-# FibonacciNode structure #
-# ----------------------- #
-
-#  This structure and the operations on it are the nodes of the
-#  Fibonacci heap.
-
-cdef struct FibonacciNode:
-    unsigned int index
-    unsigned int rank
-    NodeState state
-    DTYPE_t val
-    FibonacciNode* parent
-    FibonacciNode* left_sibling
-    FibonacciNode* right_sibling
-    FibonacciNode* children
+cdef FibonacciNode* rightmost_sibling(FibonacciNode* node) nogil:
+    # Assumptions: - node is a valid pointer
+    cdef FibonacciNode* temp = node
+    while(temp.right_sibling):
+        temp = temp.right_sibling
+    return temp
 
 cdef void initialize_node(FibonacciNode* node,
                           unsigned int index,
-                          double val=0) nogil:
+                          double val) nogil:
     # Assumptions: - node is a valid pointer
     #              - node is not currently part of a heap
     node.index = index
@@ -42,13 +30,6 @@ cdef void initialize_node(FibonacciNode* node,
     node.left_sibling = NULL
     node.right_sibling = NULL
     node.children = NULL
-
-cdef FibonacciNode* rightmost_sibling(FibonacciNode* node) nogil:
-    # Assumptions: - node is a valid pointer
-    cdef FibonacciNode* temp = node
-    while(temp.right_sibling):
-        temp = temp.right_sibling
-    return temp
 
 cdef FibonacciNode* leftmost_sibling(FibonacciNode* node) nogil:
     # Assumptions: - node is a valid pointer
@@ -104,17 +85,7 @@ cdef void remove(FibonacciNode* node) nogil:
     node.parent = NULL
 
 
-# FibonacciHeap structure #
-# ----------------------- #
 
-#  This structure and operations on it use the FibonacciNode
-#  routines to implement a Fibonacci heap
-
-ctypedef FibonacciNode* pFibonacciNode
-
-cdef struct FibonacciHeap:
-    FibonacciNode* min_node
-    pFibonacciNode[100] roots_by_rank  # maximum number of nodes is ~2^100.
 
 cdef void insert_node(FibonacciHeap* heap,
                       FibonacciNode* node) nogil:
@@ -166,6 +137,7 @@ cdef void link(FibonacciHeap* heap, FibonacciNode* node) nogil:
             remove(node)
             add_child(linknode, node)
             link(heap, linknode)
+
 
 @cython.wraparound(False)
 @cython.embedsignature(True)
