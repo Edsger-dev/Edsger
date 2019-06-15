@@ -9,49 +9,71 @@ from libc.stdlib cimport malloc, free
 import numpy as np
 cimport numpy as np
 
-cpdef test_01():
-    
-    cdef BinaryHeap bheap
 
-    init_heap(&bheap, <unsigned int>4)
+cpdef test_bheap_init_01():
 
-    print("length: ", bheap.length, ", size: ", bheap.size)
+    cdef: 
+        BinaryHeap bheap
+        unsigned int l = 4, size_A = 0
 
-    min_heap_insert(&bheap, 1, 3.0)
-    min_heap_insert(&bheap, 0, 2.0)
-    min_heap_insert(&bheap, 3, 4.0)
-    min_heap_insert(&bheap, 2, 1.0)
-    for idx in range(4):
-        print(idx, bheap.nodes[idx].key, bheap.nodes[idx].state, bheap.nodes[idx].tree_idx)
-    # for i in range(4):
+    init_heap(&bheap, l)
+    # print('INFINITY: ', INFINITY)
+
+    assert bheap.length == l
+    assert bheap.size == 0
+    for i in range(l):
+        print(bheap.nodes[i].key)
+        assert bheap.nodes[i].state == 2
+        assert bheap.nodes[i].tree_idx == l
+    # for i in range(l+20):
+    #     # try:
     #     print(bheap.A[i])
+    #     # assert bheap.A[i] == l
+    #     size_A += 1
+    #     # except:
+    #         # pass
+    # # assert size_A == l
 
-    print("size", bheap.size)
 
-    for i in range(4):
-        print("current min value :", peek(&bheap))
-        idx = extract_min(&bheap)
-        print("exctracted node with index :", idx, ", key :", bheap.nodes[idx].key, "state :", bheap.nodes[idx].state, "tree_idx", bheap.nodes[idx].tree_idx)
-        print("size", bheap.size)
+    free_heap(&bheap)
 
-    min_heap_insert(&bheap, 1, 3.0)
-    min_heap_insert(&bheap, 0, 2.0)
-    min_heap_insert(&bheap, 3, 4.0)
-    min_heap_insert(&bheap, 2, 1.0)
 
-    print("size", bheap.size)
 
-    for i in range(4):
-        if i == 2:
-            decrease_key_from_node_index(&bheap, 3, 0.0)
-        print("current min value :", peek(&bheap))
-        idx = extract_min(&bheap)
-        print("exctracted node with index :", idx, ", key :", bheap.nodes[idx].key, "state :", bheap.nodes[idx].state, "tree_idx", bheap.nodes[idx].tree_idx)
-        print("size", bheap.size)
+
+    # min_heap_insert(&bheap, 1, 3.0)
+    # min_heap_insert(&bheap, 0, 2.0)
+    # min_heap_insert(&bheap, 3, 4.0)
+    # min_heap_insert(&bheap, 2, 1.0)
+    # # for idx in range(4):
+    #     # print(idx, bheap.nodes[idx].key, bheap.nodes[idx].state, bheap.nodes[idx].tree_idx)
+    # # for i in range(4):
+    # #     print(bheap.A[i])
+
+    # print("size", bheap.size)
+
+    # for i in range(4):
+    #     print("current min value :", peek(&bheap))
+    #     idx = extract_min(&bheap)
+    #     print("exctracted node with index :", idx, ", key :", bheap.nodes[idx].key, "state :", bheap.nodes[idx].state, "tree_idx", bheap.nodes[idx].tree_idx)
+    #     print("size", bheap.size)
+
+    # min_heap_insert(&bheap, 1, 3.0)
+    # min_heap_insert(&bheap, 0, 2.0)
+    # min_heap_insert(&bheap, 3, 4.0)
+    # min_heap_insert(&bheap, 2, 1.0)
+
+    # print("size", bheap.size)
+
+    # for i in range(4):
+    #     if i == 2:
+    #         decrease_key_from_node_index(&bheap, 3, 0.0)
+    #     print("current min value :", peek(&bheap))
+    #     idx = extract_min(&bheap)
+    #     print("exctracted node with index :", idx, ", key :", bheap.nodes[idx].key, "state :", bheap.nodes[idx].state, "tree_idx", bheap.nodes[idx].tree_idx)
+    #     print("size", bheap.size)
     
     free_heap(&bheap)
 
-    print('done')
 
 
 

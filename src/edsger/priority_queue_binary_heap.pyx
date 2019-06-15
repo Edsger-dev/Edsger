@@ -1,8 +1,7 @@
 
-""" Priority queue based on a minimum binary heap.
-    
+""" Priority queue based on a minimum binary heap, 
+    focusing on time not memory efficiency.
     Binary heap implemented with a static array.
-
     Tree nodes also stored in a static array.
 
     Node array :
@@ -43,20 +42,20 @@
          / \
         3   0
  
+    Author: François Pacull
 """
 
-#!python
-#cython: boundscheck=False
-#cython: wraparound=False
-#cython: embedsignature=True
-#cython: cdivision=True
-#cython: initializedcheck=False
+# COMPILER DIRECTIVES
+#cython: boundscheck=False, wraparound=False, embedsignature=True
+#cython: cdivision=True, initializedcheck=False
+# COMPILER DIRECTIVES
 
+# import numpy as np
+# cimport numpy as np
+# cdef DTYPE_t INFINITY = np.finfo(dtype=DTYPE).max
 
-cimport cython
 from libc.stdlib cimport malloc, free
 
-from priority_queue_binary_heap cimport *
 
 cdef void init_heap(
     BinaryHeap* bheap,
