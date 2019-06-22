@@ -51,6 +51,8 @@
 # COMPILER DIRECTIVES
 
 from libc.stdlib cimport malloc, free
+cimport commons
+from commons cimport INFINITY
 
 
 cdef void init_heap(
@@ -98,7 +100,7 @@ cdef void _initialize_node(
     * unsigned int node_idx : node index
     """
     bheap.nodes[node_idx].key = INFINITY
-    bheap.nodes[node_idx].state = NOT_IN_HEAP
+    bheap.nodes[node_idx].state = commons.NOT_IN_HEAP
     bheap.nodes[node_idx].tree_idx = bheap.length
 
 
@@ -123,7 +125,7 @@ cdef void min_heap_insert(
 
     bheap.size += 1
     bheap.nodes[node_idx].key = INFINITY
-    bheap.nodes[node_idx].state = IN_HEAP
+    bheap.nodes[node_idx].state = commons.IN_HEAP
     bheap.nodes[node_idx].tree_idx = tree_idx
     bheap.A[bheap.size-1] = node_idx
     _decrease_key_from_tree_index(bheap, tree_idx, key)
@@ -203,7 +205,7 @@ cdef unsigned int extract_min(BinaryHeap* bheap) nogil:
     cdef unsigned int node_idx
 
     # update min node' state
-    bheap.nodes[bheap.A[0]].state = SCANNED
+    bheap.nodes[bheap.A[0]].state = commons.SCANNED
 
     # exchange the root of the tree with the last heap element
     _exchange_nodes(bheap, 0, bheap.size-1)

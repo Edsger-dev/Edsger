@@ -1,16 +1,12 @@
-from commons cimport DTYPE_t, INFINITY, NodeState
+from commons cimport DTYPE_t, NodeState
 
-# tree node #
-# ========= #
-
+# tree node
 cdef struct Node:
     DTYPE_t key
     NodeState state
     unsigned int tree_idx
 
-# priority queue #
-# ============== #
-
+# priority queue
 cdef struct BinaryHeap:
     unsigned int length  # number of elements in the array
     unsigned int size  # number of elements in the heap, stored within the array

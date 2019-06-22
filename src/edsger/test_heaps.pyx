@@ -1,6 +1,8 @@
 
 from priority_queue_binary_heap cimport *
 from priority_queue_fibonacci_heap cimport *
+cimport commons
+from commons cimport INFINITY
 
 import pandas as pd
 from timeit import default_timer as timer
@@ -18,21 +20,12 @@ cpdef test_bheap_init_01():
     assert bheap.length == l
     assert bheap.size == 0
     for i in range(l):
+        assert bheap.A[i] == l
         assert bheap.nodes[i].key == INFINITY
-        assert bheap.nodes[i].state == 2
+        assert bheap.nodes[i].state == commons.NOT_IN_HEAP
         assert bheap.nodes[i].tree_idx == l
-    # for i in range(l+20):
-    #     # try:
-    #     print(bheap.A[i])
-    #     # assert bheap.A[i] == l
-    #     size_A += 1
-    #     # except:
-    #         # pass
-    # # assert size_A == l
-
 
     free_heap(&bheap)
-    print('done')
 
 
 
