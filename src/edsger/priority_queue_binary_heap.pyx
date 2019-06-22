@@ -51,8 +51,8 @@
 # COMPILER DIRECTIVES
 
 from libc.stdlib cimport malloc, free
+
 cimport commons
-from commons cimport INFINITY
 
 
 cdef void init_heap(
@@ -99,7 +99,7 @@ cdef void _initialize_node(
     * BinaryHeap* bheap : binary heap
     * unsigned int node_idx : node index
     """
-    bheap.nodes[node_idx].key = INFINITY
+    bheap.nodes[node_idx].key = commons.INFINITY
     bheap.nodes[node_idx].state = commons.NOT_IN_HEAP
     bheap.nodes[node_idx].tree_idx = bheap.length
 
@@ -124,7 +124,7 @@ cdef void min_heap_insert(
     cdef unsigned int tree_idx = bheap.size
 
     bheap.size += 1
-    bheap.nodes[node_idx].key = INFINITY
+    bheap.nodes[node_idx].key = commons.INFINITY
     bheap.nodes[node_idx].state = commons.IN_HEAP
     bheap.nodes[node_idx].tree_idx = tree_idx
     bheap.A[bheap.size-1] = node_idx
