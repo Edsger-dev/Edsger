@@ -8,3 +8,8 @@ global DTYPE_t
 
 cdef DTYPE_t INFINITY 
 global INFINITY
+
+ctypedef enum NodeState:
+    SCANNED = 1
+    NOT_IN_HEAP = 2
+    IN_HEAP = 3

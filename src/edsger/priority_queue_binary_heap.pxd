@@ -1,9 +1,4 @@
-from commons cimport DTYPE_t, INFINITY
-
-cdef enum NodeState:
-    SCANNED = 1
-    NOT_IN_HEAP = 2
-    IN_HEAP = 3
+from commons cimport DTYPE_t, INFINITY, NodeState
 
 # tree node #
 # ========= #
