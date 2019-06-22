@@ -6,9 +6,6 @@ import pandas as pd
 from timeit import default_timer as timer
 from libc.stdlib cimport malloc, free
 
-import numpy as np
-cimport numpy as np
-
 
 cpdef test_bheap_init_01():
 
@@ -17,12 +14,11 @@ cpdef test_bheap_init_01():
         unsigned int l = 4, size_A = 0
 
     init_heap(&bheap, l)
-    # print('INFINITY: ', INFINITY)
 
     assert bheap.length == l
     assert bheap.size == 0
     for i in range(l):
-        print(bheap.nodes[i].key)
+        assert bheap.nodes[i].key == INFINITY
         assert bheap.nodes[i].state == 2
         assert bheap.nodes[i].tree_idx == l
     # for i in range(l+20):
@@ -36,6 +32,7 @@ cpdef test_bheap_init_01():
 
 
     free_heap(&bheap)
+    print('done')
 
 
 

@@ -50,10 +50,6 @@
 #cython: cdivision=True, initializedcheck=False
 # COMPILER DIRECTIVES
 
-# import numpy as np
-# cimport numpy as np
-# cdef DTYPE_t INFINITY = np.finfo(dtype=DTYPE).max
-
 from libc.stdlib cimport malloc, free
 
 
@@ -67,6 +63,7 @@ cdef void init_heap(
     * BinaryHeap* bheap : binary heap
     * unsigned int length : length (maximum size) of the binary heap
     """
+    # cdef unsigned int i
     cdef unsigned int i
 
     bheap.length = length

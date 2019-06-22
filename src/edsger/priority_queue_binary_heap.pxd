@@ -1,10 +1,4 @@
-cimport numpy as np
-import numpy as np
-
-cdef DTYPE = np.float64
-ctypedef np.float64_t DTYPE_t
-
-cdef DTYPE_t INFINITY = np.finfo(dtype=DTYPE).max
+from commons cimport DTYPE_t, INFINITY
 
 cdef enum NodeState:
     SCANNED = 1
