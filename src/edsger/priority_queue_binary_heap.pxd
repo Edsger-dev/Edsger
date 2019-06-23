@@ -20,11 +20,3 @@ cdef void decrease_key_from_node_index(BinaryHeap*, unsigned int, DTYPE_t) nogil
 cdef DTYPE_t peek(BinaryHeap*) nogil
 cdef bint is_empty(BinaryHeap* bheap) nogil
 cdef unsigned int extract_min(BinaryHeap*) nogil
-
-# cdef void _initialize_node(BinaryHeap*, unsigned int) nogil
-# cdef unsigned int _parent(unsigned int i) nogil
-# cdef unsigned int _left_child(unsigned int i) nogil
-# cdef unsigned int _right_child(unsigned int i) nogil
-# cdef void _exchange_nodes(BinaryHeap*, unsigned int, unsigned int) nogil
-# cdef void _min_heapify(BinaryHeap*, unsigned int) nogil
-# cdef void _decrease_key_from_tree_index(BinaryHeap*, unsigned int, DTYPE_t) nogil
