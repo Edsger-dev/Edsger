@@ -147,8 +147,24 @@ cpdef test_bheap_is_empty_01():
     free_heap(&bheap)
 
 
+cpdef test_bheap_extract_01():
 
+    cdef BinaryHeap bheap
 
+    init_heap(&bheap, 2)
+
+    min_heap_insert(&bheap, 0, 1.0)
+    min_heap_insert(&bheap, 1, 2.0)
+
+    assert bheap.size == 2
+    assert peek(&bheap) == 1.0
+    assert extract_min(&bheap) == 0
+    assert bheap.size == 1
+    assert peek(&bheap) == 2.0    
+    assert extract_min(&bheap) == 1
+    assert bheap.size == 0
+
+    free_heap(&bheap)
 
 
 
