@@ -1,3 +1,4 @@
+import numpy as np
 # import pandas as pd
 # from timeit import default_timer as timer
 # from libc.stdlib cimport malloc, free
@@ -175,18 +176,36 @@ cpdef test_bheap_extract():
     assert bheap.size == 2
     assert peek(&bheap) == 1.0
     assert extract_min(&bheap) == 0
+    assert bheap.nodes[0].state == commons.SCANNED
     assert bheap.size == 1
     assert peek(&bheap) == 2.0    
     assert extract_min(&bheap) == 1
+    assert bheap.nodes[1].state == commons.SCANNED
     assert bheap.size == 0
 
     free_heap(&bheap)
 
 
-# cpdef test_sort(n=10):
+cpdef test_sort(n=100, seed=124):
     
-#     cdef BinaryHeap bheap
+    cdef: 
+        BinaryHeap bheap
+        size_t i
 
+    init_heap(&bheap, n)
+    np.random.seed(seed)
+    values = np.random.rand(n)
+
+    sorted_values = np.zeros(n)
+    for i in range(n):
+        min_heap_insert(&bheap, <unsigned int>i, <commons.DTYPE_t> values[i])
+    for i in range(n):
+        sorted_values[i] = bheap.nodes[extract_min(&bheap)].key
+
+    sorted_ref = np.sort(values)  # kind : {‘quicksort’, ‘mergesort’, ‘heapsort’, ‘stable’}, Default is ‘quicksort’.
+    assert np.array_equal(sorted_values, sorted_ref)
+
+    free_heap(&bheap)
 
 
 # cpdef test_02():
