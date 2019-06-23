@@ -1,11 +1,10 @@
+# import pandas as pd
+# from timeit import default_timer as timer
+# from libc.stdlib cimport malloc, free
 
 from priority_queue_binary_heap cimport *
 from priority_queue_fibonacci_heap cimport *
 cimport commons
-
-import pandas as pd
-from timeit import default_timer as timer
-from libc.stdlib cimport malloc, free
 
 
 cpdef test_bheap_init_01(unsigned int l=4):
@@ -83,6 +82,42 @@ cpdef test_bheap_insert_02():
     assert bheap.nodes[3].tree_idx in [1, 2]
 
     free_heap(&bheap)
+
+
+cpdef test_bheab_decrease_01():
+
+    cdef BinaryHeap bheap
+
+    init_heap(&bheap, 4)
+    min_heap_insert(&bheap, 3, 3.0)
+    min_heap_insert(&bheap, 0, 2.0)
+    min_heap_insert(&bheap, 2, 1.0)    
+    decrease_key_from_node_index(&bheap, 3, 0.5)
+    decrease_key_from_node_index(&bheap, 0, 0.0)
+    min_heap_insert(&bheap, 1, 2.0)
+
+    assert bheap.length == 4
+    assert bheap.size == 4
+
+    assert bheap.A[0] == 0
+    assert bheap.A[1] != bheap.A[2]
+    assert bheap.A[1] in [2, 3]
+    assert bheap.A[2] in [2, 3]
+    assert bheap.A[3] == 1
+    assert bheap.nodes[0].key == 0.0
+    assert bheap.nodes[1].key == 2.0
+    assert bheap.nodes[2].key == 1.0
+    assert bheap.nodes[3].key == 0.5
+    for i in range(4):
+        assert bheap.nodes[i].state == commons.IN_HEAP
+        assert bheap.nodes[bheap.A[i]].tree_idx == i
+        assert bheap.A[bheap.nodes[i].tree_idx] == i
+
+    free_heap(&bheap)
+    print('done')
+
+
+
 
 
     # min_heap_insert(&bheap, 1, 3.0)
