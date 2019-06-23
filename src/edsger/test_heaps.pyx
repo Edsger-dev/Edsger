@@ -7,7 +7,7 @@ from priority_queue_fibonacci_heap cimport *
 cimport commons
 
 
-cpdef test_bheap_init_01(unsigned int l=4):
+cpdef test_bheap_init(unsigned int l=4):
     """ Testing the initialization of a binary heap.
 
     A small heap is created. Then we check the values
@@ -84,7 +84,7 @@ cpdef test_bheap_insert_02():
     free_heap(&bheap)
 
 
-cpdef test_bheab_decrease_01():
+cpdef test_bheab_decrease():
     """ Creating a binary heap of length 4, inserting 4 nodes and 
     decreasing the key of 2 nodes.
     """
@@ -118,7 +118,7 @@ cpdef test_bheab_decrease_01():
     free_heap(&bheap)
 
 
-cpdef test_bheap_peek_01():
+cpdef test_bheap_peek():
 
     cdef BinaryHeap bheap
 
@@ -132,7 +132,7 @@ cpdef test_bheap_peek_01():
     free_heap(&bheap)
 
 
-cpdef test_bheap_is_empty_01():
+cpdef test_bheap_is_empty():
 
     cdef BinaryHeap bheap
 
@@ -147,7 +147,7 @@ cpdef test_bheap_is_empty_01():
     free_heap(&bheap)
 
 
-cpdef test_bheap_extract_01():
+cpdef test_bheap_extract():
 
     cdef BinaryHeap bheap
 
@@ -165,7 +165,6 @@ cpdef test_bheap_extract_01():
     assert bheap.size == 0
 
     free_heap(&bheap)
-
 
 
 # cpdef test_02():
