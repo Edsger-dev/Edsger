@@ -2,7 +2,6 @@
 from priority_queue_binary_heap cimport *
 from priority_queue_fibonacci_heap cimport *
 cimport commons
-from commons cimport INFINITY
 
 import pandas as pd
 from timeit import default_timer as timer
@@ -12,12 +11,11 @@ from libc.stdlib cimport malloc, free
 cpdef test_bheap_init_01(unsigned int l=4):
     """ Testing the initialization of a binary heap.
 
-        A small heap is created. Then we check the values
-        of the empty heap.
+    A small heap is created. Then we check the values
+    of the empty heap.
     """
 
-    cdef: 
-        BinaryHeap bheap
+    cdef BinaryHeap bheap
 
     init_heap(&bheap, l)
 
@@ -25,7 +23,7 @@ cpdef test_bheap_init_01(unsigned int l=4):
     assert bheap.size == 0
     for i in range(l):
         assert bheap.A[i] == l
-        assert bheap.nodes[i].key == INFINITY
+        assert bheap.nodes[i].key == commons.INFINITY
         assert bheap.nodes[i].state == commons.NOT_IN_HEAP
         assert bheap.nodes[i].tree_idx == l
 
@@ -33,13 +31,59 @@ cpdef test_bheap_init_01(unsigned int l=4):
 
 
 cpdef test_bheap_insert_01():
-    
-    cdef: 
-        BinaryHeap bheap
+    """ Testing a single insertion into an empty binary heap 
+    of length 1.
+    """
+
+    cdef BinaryHeap bheap
+
+    init_heap(&bheap, 1)
+    min_heap_insert(&bheap, 0, 1.0)
+    assert bheap.length == 1
+    assert bheap.size == 1
+    assert bheap.A[0] == 0
+    assert bheap.nodes[0].key == 1.0
+    assert bheap.nodes[0].state == commons.IN_HEAP
+    assert bheap.nodes[0].tree_idx == 0
+
+    free_heap(&bheap)
+
+
+cpdef test_bheap_insert_02():
+    """ Creating a heap of length 4 ad inserting 3 nodes.
+    """
+
+    cdef BinaryHeap bheap
 
     init_heap(&bheap, 4)
+    min_heap_insert(&bheap, 3, 3.0)
+    min_heap_insert(&bheap, 0, 2.0)
+    min_heap_insert(&bheap, 2, 1.0)
+
+    assert bheap.length == 4
+    assert bheap.size == 3
+
+    assert bheap.A[0] == 2
+    assert bheap.A[1] != bheap.A[2]
+    assert bheap.A[1] in [0, 3]
+    assert bheap.A[2] in [0, 3]
+    assert bheap.A[3] == 4
+
+    assert bheap.nodes[0].key == 2.0
+    assert bheap.nodes[0].state == commons.IN_HEAP
+    assert bheap.nodes[0].tree_idx in [1, 2]
+    assert bheap.nodes[1].key == commons.INFINITY
+    assert bheap.nodes[1].state == commons.NOT_IN_HEAP
+    assert bheap.nodes[1].tree_idx == 4 
+    assert bheap.nodes[2].key == 1.0
+    assert bheap.nodes[2].state == commons.IN_HEAP
+    assert bheap.nodes[2].tree_idx == 0
+    assert bheap.nodes[3].key == 3.0
+    assert bheap.nodes[3].state == commons.IN_HEAP
+    assert bheap.nodes[3].tree_idx in [1, 2]
+
     free_heap(&bheap)
-    print('done')
+
 
     # min_heap_insert(&bheap, 1, 3.0)
     # min_heap_insert(&bheap, 0, 2.0)
