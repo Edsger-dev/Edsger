@@ -85,6 +85,9 @@ cpdef test_bheap_insert_02():
 
 
 cpdef test_bheab_decrease_01():
+    """ Creating a binary heap of length 4, inserting 4 nodes and 
+    decreasing the key of 2 nodes.
+    """
 
     cdef BinaryHeap bheap
 
@@ -110,12 +113,23 @@ cpdef test_bheab_decrease_01():
     assert bheap.nodes[3].key == 0.5
     for i in range(4):
         assert bheap.nodes[i].state == commons.IN_HEAP
-        assert bheap.nodes[bheap.A[i]].tree_idx == i
-        assert bheap.A[bheap.nodes[i].tree_idx] == i
+        assert bheap.nodes[bheap.A[i]].tree_idx == i  # similar to: assert bheap.A[bheap.nodes[i].tree_idx] == i
 
     free_heap(&bheap)
-    print('done')
 
+
+cpdef test_bheap_peek_01():
+
+    cdef BinaryHeap bheap
+
+    init_heap(&bheap, 4)
+    min_heap_insert(&bheap, 0, 3.0)
+    min_heap_insert(&bheap, 1, 2.0)
+    min_heap_insert(&bheap, 2, 1.0)
+    assert peek(&bheap) == 1.0
+    assert bheap.nodes[bheap.A[0]].key == 1.0
+
+    free_heap(&bheap)
 
 
 
