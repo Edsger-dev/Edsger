@@ -84,6 +84,22 @@ cpdef test_bheap_insert_02():
     free_heap(&bheap)
 
 
+cpdef test_bheap_insert_03(n=4):
+    """ Inserting nodes with identical keys.
+    """
+    cdef: 
+        BinaryHeap bheap
+        size_t i
+
+    init_heap(&bheap, n)
+    for i in range(n):
+        min_heap_insert(&bheap, i, 1.0)
+    for i in range(n):
+        assert bheap.A[i] == i
+
+    free_heap(&bheap)
+
+
 cpdef test_bheab_decrease():
     """ Creating a binary heap of length 4, inserting 4 nodes and 
     decreasing the key of 2 nodes.
@@ -165,6 +181,12 @@ cpdef test_bheap_extract():
     assert bheap.size == 0
 
     free_heap(&bheap)
+
+
+# cpdef test_sort(n=10):
+    
+#     cdef BinaryHeap bheap
+
 
 
 # cpdef test_02():
