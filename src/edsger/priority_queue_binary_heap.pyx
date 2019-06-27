@@ -65,7 +65,6 @@ cdef void init_heap(
     * BinaryHeap* bheap : binary heap
     * unsigned int length : length (maximum size) of the binary heap
     """
-    # cdef unsigned int i
     cdef unsigned int i
 
     bheap.length = length
@@ -173,7 +172,7 @@ cdef DTYPE_t peek(BinaryHeap* bheap) nogil:
 
 
 cdef bint is_empty(BinaryHeap* bheap) nogil:
-    """Check whether the queue has no elements.
+    """Check whether the queue has no element.
 
     input
     =====
