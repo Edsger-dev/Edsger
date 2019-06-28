@@ -201,20 +201,22 @@ cdef unsigned int extract_min(BinaryHeap* bheap) nogil:
     ==========
     * bheap.size > 0
     """
-    cdef unsigned int node_idx
+    cdef: 
+        unsigned int node_idx
+        unsigned int i = bheap.size - 1
 
     # update min node' state
     bheap.nodes[bheap.A[0]].state = commons.SCANNED
 
     # exchange the root of the tree with the last heap element
-    _exchange_nodes(bheap, 0, bheap.size-1)
+    _exchange_nodes(bheap, 0, i)
 
     # get the min node index
-    node_idx = bheap.A[bheap.size-1]
+    node_idx = bheap.A[i]
 
     # remove this node from the heap
     bheap.nodes[node_idx].tree_idx = bheap.length  # reset tree index
-    bheap.A[bheap.size-1] = bheap.length  # reset tree array value
+    bheap.A[i] = bheap.length  # reset tree array value
     bheap.size -= 1
 
     # reorder the tree elements
