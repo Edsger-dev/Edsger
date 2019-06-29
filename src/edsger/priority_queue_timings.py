@@ -1,9 +1,9 @@
 import pandas as pd
 
-from sort_timings import *
+from priority_queue_timings import *
 
 res = []
-for i in range(1,6):
+for i in range(1,5):
     n = 10**i
     for j in range(3):
         d = sort_compare(n)

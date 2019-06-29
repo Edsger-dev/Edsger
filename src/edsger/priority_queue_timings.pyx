@@ -1,17 +1,21 @@
+# COMPILER DIRECTIVES
+#cython: boundscheck=False, wraparound=False, embedsignature=True
+#cython: cdivision=True, initializedcheck=False
+# COMPILER DIRECTIVES
+
 cimport numpy as np
 import numpy as np
 from libc.stdlib cimport malloc, free
 
 from commons import Timer
 cimport commons
-from test_heaps import *
 from priority_queue_binary_heap cimport *
 from priority_queue_fibonacci_heap cimport *
 
-cdef sort(n=100, seed=124):
+cdef sort(unsigned int n=100, seed=124):
     cdef: 
         BinaryHeap bheap
-        size_t i
+        unsigned int i
 
     np.random.seed(seed)
     values = np.random.rand(n)
@@ -23,7 +27,6 @@ cdef sort(n=100, seed=124):
     sorted_values = np.empty(n)
     init_heap(&bheap, n)
     for i in range(n):
-        # min_heap_insert(&bheap, <unsigned int>i, <commons.DTYPE_t> values[i])
         min_heap_insert(&bheap, i, values[i])
     for i in range(n):
         sorted_values[i] = bheap.nodes[extract_min(&bheap)].key
@@ -42,10 +45,9 @@ cdef sort(n=100, seed=124):
         FibonacciNode *hnode
         FibonacciNode *hnodes = <FibonacciNode*> malloc(n * sizeof(FibonacciNode))
 
-    for i in range(n):
-        initialize_node(&hnodes[i], i, values[i])
     heap.min_node = NULL
     for i in range(n):
+        initialize_node(&hnodes[i], i, values[i])
         insert_node(&heap, &hnodes[i])
     for i in range(n):
         hnode = remove_min(&heap)
@@ -57,7 +59,6 @@ cdef sort(n=100, seed=124):
 
     assert np.array_equal(sorted_values, sorted_ref)
 
-
     for algo in ['quicksort', 'mergesort', 'heapsort']:
         timer = Timer()
         timer.start()
@@ -67,6 +68,7 @@ cdef sort(n=100, seed=124):
         assert np.array_equal(sorted_values, sorted_ref)
 
     return time
+
 
 cpdef sort_compare(n=100, seed=124):
     time = sort(n, seed)
