@@ -6,24 +6,26 @@ requirements = ["cython", "numpy", "pandas"]
 setup_requirements = ["cython", "numpy"]
 test_requirements = ["pytest"]
 
-include_dirs = []
-try:
-    import numpy
-
-    include_dirs += [numpy.get_include()]
-except:
-    pass
-
 # Get the licence
 with open("LICENSE") as f:
     license = f.read()
 
+extra_compile_args = ["-Ofast"]
+
 extensions = [
-    Extension("commons.*", ["src/edsger/commons.pyx"]),
-    # Extension("priority_queue_binary_heap.*", ["src/edsger/priority_queue_binary_heap.pyx"]),
-    # Extension("priority_queue_fibonacci_heap", ["priority_queue_fibonacci_heap.pyx"]),
-    # Extension("test_heaps", ["test_heaps.pyx"]),
-    # Extension("priority_queue_timings", ["priority_queue_timings.pyx"]),
+    Extension("commons", ["src/edsger/commons.pyx"]),
+    Extension(
+        "priority_queue_binary_heap",
+        ["src/edsger/priority_queue_binary_heap.pyx"],
+        extra_compile_args=extra_compile_args,
+    ),
+    Extension(
+        "priority_queue_fibonacci_heap",
+        ["src/edsger/priority_queue_fibonacci_heap.pyx"],
+        extra_compile_args=extra_compile_args,
+    ),
+    Extension("test_heaps", ["src/edsger/test_heaps.pyx"]),
+    Extension("priority_queue_timings", ["src/edsger/priority_queue_timings.pyx"]),
 ]
 
 setup(
@@ -33,18 +35,21 @@ setup(
     author="Edsger devs",
     author_email="pacullfrancois@gmail.com",
     license=license,
-    extras_require={"test": test_requirements},
-    package_dir={"": "src"},
-    packages=find_packages(where="src"),
+    package_dir={"edsger": "src/edsger"},
     package_data={
-        "commons": ["*.pxd"], 
-        "priority_queue_binary_heap": ["*.pxd"]},
-    ext_modules=cythonize(extensions, compiler_directives={"language_level": "3"}),
+        "commons": ["src/edsger/commons.pxd"],
+        "priority_queue_binary_heap": ["src/edsger/priority_queue_binary_heap.pxd"],
+        "priority_queue_fibonacci_heap": [
+            "src/edsger/priority_queue_fibonacci_heap.pxd"
+        ],
+    },
+    ext_modules=cythonize(
+        extensions,
+        compiler_directives={"language_level": "3"},
+        include_path=["src/edsger/"],
+    ),
     install_requires=requirements,
     setup_requires=setup_requirements,
     tests_require=test_requirements,
-    include_dirs=include_dirs,
-    include_package_data=True,
-    # Note that zip_safe needs to be false in order for the pxd files to be available to cython cimport
-    zip_safe=False,
+    extras_require={"test": test_requirements},
 )
