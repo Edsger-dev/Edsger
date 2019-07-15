@@ -58,4 +58,5 @@ setup(
     setup_requires=setup_requirements,
     tests_require=test_requirements,
     extras_require={"test": test_requirements},
+    packages=find_packages()
 )
