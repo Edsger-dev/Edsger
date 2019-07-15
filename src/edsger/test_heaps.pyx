@@ -9,7 +9,7 @@ from edsger.priority_queue_binary_heap cimport *
 from edsger.priority_queue_fibonacci_heap cimport *
 
 
-cpdef test_bheap_init(unsigned int l=4):
+cpdef bheap_init(unsigned int l=4):
     """ Testing the initialization of a binary heap.
 
     A small heap is created. Then we check the values
@@ -30,8 +30,10 @@ cpdef test_bheap_init(unsigned int l=4):
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_bheap_insert_01():
+
+cpdef bheap_insert_01():
     """ Testing a single insertion into an empty binary heap 
     of length 1.
     """
@@ -49,8 +51,10 @@ cpdef test_bheap_insert_01():
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_bheap_insert_02():
+
+cpdef bheap_insert_02():
     """ Creating a heap of length 4 ad inserting 3 nodes.
     """
 
@@ -85,8 +89,10 @@ cpdef test_bheap_insert_02():
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_bheap_insert_03(n=4):
+
+cpdef bheap_insert_03(n=4):
     """ Inserting nodes with identical keys.
     """
     cdef: 
@@ -101,8 +107,10 @@ cpdef test_bheap_insert_03(n=4):
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_bheab_decrease():
+
+cpdef bheab_decrease():
     """ Creating a binary heap of length 4, inserting 4 nodes and 
     decreasing the key of 2 nodes.
     """
@@ -135,8 +143,10 @@ cpdef test_bheab_decrease():
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_bheap_peek():
+
+cpdef bheap_peek():
 
     cdef BinaryHeap bheap
 
@@ -149,8 +159,10 @@ cpdef test_bheap_peek():
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_bheap_is_empty():
+
+cpdef bheap_is_empty():
 
     cdef BinaryHeap bheap
 
@@ -164,8 +176,10 @@ cpdef test_bheap_is_empty():
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_bheap_extract():
+
+cpdef bheap_extract():
 
     cdef BinaryHeap bheap
 
@@ -186,8 +200,10 @@ cpdef test_bheap_extract():
 
     free_heap(&bheap)
 
+    return True
 
-cpdef test_sort(n=100, seed=124):
+
+cpdef sort(n=100, seed=124):
     
     cdef: 
         BinaryHeap bheap
@@ -208,6 +224,7 @@ cpdef test_sort(n=100, seed=124):
 
     free_heap(&bheap)
 
+    return True
 
 # cpdef test_02():
 
