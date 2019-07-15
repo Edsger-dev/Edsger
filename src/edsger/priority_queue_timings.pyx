@@ -8,7 +8,6 @@ import numpy as np
 from libc.stdlib cimport malloc, free
 
 from commons import Timer
-cimport commons
 from priority_queue_binary_heap cimport *
 from priority_queue_fibonacci_heap cimport *
 
