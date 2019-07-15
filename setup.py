@@ -13,19 +13,21 @@ with open("LICENSE") as f:
 extra_compile_args = ["-Ofast"]
 
 extensions = [
-    Extension("commons", ["src/edsger/commons.pyx"]),
+    Extension("edsger.commons", ["src/edsger/commons.pyx"]),
     Extension(
-        "priority_queue_binary_heap",
+        "edsger.priority_queue_binary_heap",
         ["src/edsger/priority_queue_binary_heap.pyx"],
         extra_compile_args=extra_compile_args,
     ),
     Extension(
-        "priority_queue_fibonacci_heap",
+        "edsger.priority_queue_fibonacci_heap",
         ["src/edsger/priority_queue_fibonacci_heap.pyx"],
         extra_compile_args=extra_compile_args,
     ),
-    Extension("test_heaps", ["src/edsger/test_heaps.pyx"]),
-    Extension("priority_queue_timings", ["src/edsger/priority_queue_timings.pyx"]),
+    Extension("edsger.test_heaps", ["src/edsger/test_heaps.pyx"]),
+    Extension(
+        "edsger.priority_queue_timings", ["src/edsger/priority_queue_timings.pyx"]
+    ),
 ]
 
 setup(
@@ -37,11 +39,15 @@ setup(
     license=license,
     package_dir={"edsger": "src/edsger"},
     package_data={
-        "commons": ["src/edsger/commons.pxd"],
-        "priority_queue_binary_heap": ["src/edsger/priority_queue_binary_heap.pxd"],
-        "priority_queue_fibonacci_heap": [
+        "edsger.commons": ["src/edsger/commons.pxd"],
+        "edsger.priority_queue_binary_heap": [
+            "src/edsger/priority_queue_binary_heap.pxd"
+        ],
+        "edsger.priority_queue_fibonacci_heap": [
             "src/edsger/priority_queue_fibonacci_heap.pxd"
         ],
+        "edsger.priority_queue_timings": ["src/edsger/priority_queue_timings"],
+        "edsger.test_heaps": ["src/edsger/test_heaps"],
     },
     ext_modules=cythonize(
         extensions,
