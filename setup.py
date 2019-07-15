@@ -32,7 +32,7 @@ extensions = [
 
 setup(
     name="Edsger",
-    version="0.0.0",
+    version="0.0.1",
     description="Static user equilibrium assignment",
     author="Edsger devs",
     author_email="pacullfrancois@gmail.com",
