@@ -1,4 +1,4 @@
-from commons cimport DTYPE_t, NodeState
+from edsger.commons cimport DTYPE_t, NodeState
 
 # tree node
 cdef struct Node:
