@@ -8,8 +8,6 @@
 
 cimport cython
 
-from priority_queue_fibonacci_heap cimport *
-
 cdef FibonacciNode* rightmost_sibling(FibonacciNode* node) nogil:
     # Assumptions: - node is a valid pointer
     cdef FibonacciNode* temp = node
