@@ -52,7 +52,7 @@
 
 from libc.stdlib cimport malloc, free
 
-cimport commons
+cimport edsger.commons as commons
 
 
 cdef void init_heap(

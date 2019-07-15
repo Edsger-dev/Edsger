@@ -4,9 +4,9 @@ import numpy as np
 # from timeit import default_timer as timer
 # from libc.stdlib cimport malloc, free
 
-from priority_queue_binary_heap cimport *
-from priority_queue_fibonacci_heap cimport *
-cimport commons
+cimport edsger.commons as commons
+from edsger.priority_queue_binary_heap cimport *
+from edsger.priority_queue_fibonacci_heap cimport *
 
 
 cpdef test_bheap_init(unsigned int l=4):

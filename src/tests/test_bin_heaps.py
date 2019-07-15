@@ -1,4 +1,4 @@
-from test_heaps import *
+from edsger.test_heaps import *
 
 test_bheap_init(0)
 test_bheap_init(4)

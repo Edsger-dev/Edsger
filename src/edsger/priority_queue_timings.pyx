@@ -7,9 +7,9 @@ cimport numpy as np
 import numpy as np
 from libc.stdlib cimport malloc, free
 
-from commons import Timer
-from priority_queue_binary_heap cimport *
-from priority_queue_fibonacci_heap cimport *
+from edsger.commons import Timer
+from edsger.priority_queue_binary_heap cimport *
+from edsger.priority_queue_fibonacci_heap cimport *
 
 cdef sort(unsigned int n=100, seed=124):
     cdef: 
