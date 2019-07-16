@@ -4,9 +4,9 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.7
-      branches:
-        only:
-          - master
+    branches:
+      only:
+        - master
     working_directory: ~/repo
 
     steps:
