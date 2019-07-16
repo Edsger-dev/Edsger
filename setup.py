@@ -51,7 +51,7 @@ extensions = [
 
 setup(
     name="Edsger",
-    version=find_version("edsger", "__init__.py"),
+    version=find_version("src", "edsger", "__init__.py"),
     description="Static user equilibrium assignment",
     author="Edsger devs",
     author_email="pacullfrancois@gmail.com",
