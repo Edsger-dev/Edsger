@@ -1,8 +1,7 @@
 
-""" Priority queue based on a minimum binary heap.
-    
+""" Priority queue based on a minimum binary heap, 
+    focusing on time not memory efficiency.
     Binary heap implemented with a static array.
-
     Tree nodes also stored in a static array.
 
     Node array :
@@ -43,20 +42,18 @@
          / \
         3   0
  
+    Author: François Pacull
 """
 
-#!python
-#cython: boundscheck=False
-#cython: wraparound=False
-#cython: embedsignature=True
-#cython: cdivision=True
-#cython: initializedcheck=False
+# COMPILER DIRECTIVES
+#cython: boundscheck=False, wraparound=False, embedsignature=True
+#cython: cdivision=True, initializedcheck=False
+# COMPILER DIRECTIVES
 
-
-cimport cython
 from libc.stdlib cimport malloc, free
 
-from priority_queue_binary_heap cimport *
+cimport edsger.commons as commons
+
 
 cdef void init_heap(
     BinaryHeap* bheap,
@@ -101,8 +98,8 @@ cdef void _initialize_node(
     * BinaryHeap* bheap : binary heap
     * unsigned int node_idx : node index
     """
-    bheap.nodes[node_idx].key = INFINITY
-    bheap.nodes[node_idx].state = NOT_IN_HEAP
+    bheap.nodes[node_idx].key = commons.INFINITY
+    bheap.nodes[node_idx].state = commons.NOT_IN_HEAP
     bheap.nodes[node_idx].tree_idx = bheap.length
 
 
@@ -126,8 +123,8 @@ cdef void min_heap_insert(
     cdef unsigned int tree_idx = bheap.size
 
     bheap.size += 1
-    bheap.nodes[node_idx].key = INFINITY
-    bheap.nodes[node_idx].state = IN_HEAP
+    bheap.nodes[node_idx].key = commons.INFINITY
+    bheap.nodes[node_idx].state = commons.IN_HEAP
     bheap.nodes[node_idx].tree_idx = tree_idx
     bheap.A[bheap.size-1] = node_idx
     _decrease_key_from_tree_index(bheap, tree_idx, key)
@@ -175,7 +172,7 @@ cdef DTYPE_t peek(BinaryHeap* bheap) nogil:
 
 
 cdef bint is_empty(BinaryHeap* bheap) nogil:
-    """Check whether the queue has no elements.
+    """Check whether the queue has no element.
 
     input
     =====
@@ -204,20 +201,22 @@ cdef unsigned int extract_min(BinaryHeap* bheap) nogil:
     ==========
     * bheap.size > 0
     """
-    cdef unsigned int node_idx
+    cdef: 
+        unsigned int node_idx
+        unsigned int i = bheap.size - 1
 
     # update min node' state
-    bheap.nodes[bheap.A[0]].state = SCANNED
+    bheap.nodes[bheap.A[0]].state = commons.SCANNED
 
     # exchange the root of the tree with the last heap element
-    _exchange_nodes(bheap, 0, bheap.size-1)
+    _exchange_nodes(bheap, 0, i)
 
     # get the min node index
-    node_idx = bheap.A[bheap.size-1]
+    node_idx = bheap.A[i]
 
     # remove this node from the heap
     bheap.nodes[node_idx].tree_idx = bheap.length  # reset tree index
-    bheap.A[bheap.size-1] = bheap.length  # reset tree array value
+    bheap.A[i] = bheap.length  # reset tree array value
     bheap.size -= 1
 
     # reorder the tree elements

@@ -1,19 +1,38 @@
 # Edsger
 
+Compute equilibrium flows in urban areas, on traffic networks.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![CircleCI](https://circleci.com/gh/Edsger-dev/Edsger/tree/master.svg?style=svg)](https://circleci.com/gh/Edsger-dev/Edsger/tree/master)
+
 Edsger has been developed in python 3.7.  
 
-Here is the structure of the package directory:
+## Linux install
+
+### Standard install
 
 ```bash
-├── LICENCE.txt
-├── README.md
-└── src
-    └── edsger
-        ├── priority_queue_binary_heap.c
-        ├── priority_queue_binary_heap.pyx
-        ├── priority_queue_fibonacci_heap.pyx
-        ├── setup.py
-        ├── test_heaps.c
-        └── test_heaps.pyx
+git clone git@github.com:Edsger-dev/Edsger.git edsger_dir/
+cd edsger_dir/
+edsger_dir $ pip install -r requirements.txt
+edsger_dir $ pip install .
 ```
 
+### Test install
+
+* `bash`
+
+```bash
+edsger_dir $ pip install .[test]
+```
+
+* `zsh` (ìf you're using `zsh` you need to escape square brackets)
+
+```bash
+edsger_dir $ pip install .\[test\]
+```
+## Run the tests
+
+```bash
+cd edsger_dir/
+edsger_dir $ pytest
+```

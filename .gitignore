@@ -107,5 +107,4 @@ ENV/
 # data dir
 data/
 
-# sphinx
-docs/build/
+

@@ -4,16 +4,16 @@ cimport numpy as np
 DTYPE = np.float64
 ctypedef np.float64_t DTYPE_t
 
+cdef enum NodeState:
+   SCANNED = 1
+   NOT_IN_HEAP = 2
+   IN_HEAP = 3
+
 # FibonacciNode structure #
 # ----------------------- #
 
 #  This structure and the operations on it are the nodes of the
 #  Fibonacci heap.
-
-cdef enum NodeState:
-   SCANNED = 1
-   NOT_IN_HEAP = 2
-   IN_HEAP = 3
 
 cdef struct FibonacciNode:
     unsigned int index
