@@ -1,6 +1,6 @@
 import pandas as pd
 
-from edsger.priority_queue_timings import *
+from edsger.priority_queue_timings import sort_compare
 
 res = []
 for i in range(1,5):
