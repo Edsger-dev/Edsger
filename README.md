@@ -1,5 +1,7 @@
 # Edsger
 
+[![CircleCI](https://circleci.com/gh/Edsger-dev/Edsger/tree/master.svg?style=svg)](https://circleci.com/gh/Edsger-dev/Edsger/tree/master)
+
 Edsger has been developed in python 3.7.  
 
 Linux install
