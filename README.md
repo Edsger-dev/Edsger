@@ -1,6 +1,6 @@
 # Edsger
 
-Compute equilibrium flows in urban areas, on traffic networks.
+Compute equilibrium flows on traffic networks.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![CircleCI](https://circleci.com/gh/Edsger-dev/Edsger/tree/master.svg?style=svg)](https://circleci.com/gh/Edsger-dev/Edsger/tree/master)
 
