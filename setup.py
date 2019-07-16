@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages, Extension
 from codecs import open  # To use a consistent encoding
 from Cython.Build import cythonize
+import numpy
 
 requirements = ["cython", "numpy", "pandas"]
 setup_requirements = ["cython", "numpy"]
@@ -58,5 +59,6 @@ setup(
     setup_requires=setup_requirements,
     tests_require=test_requirements,
     extras_require={"test": test_requirements},
-    packages=find_packages()
+    include_dirs=[numpy.get_include()],
+    packages=find_packages(),
 )
