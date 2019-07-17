@@ -28,5 +28,5 @@ jobs:
           command: |
             . venv/bin/activate
             flake8 --exclude=venv* --statistics
-            pytest -v --cov=./src/
+            pytest -v --cov-report=xml --cov=./src/
             codecov
