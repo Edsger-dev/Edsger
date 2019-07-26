@@ -47,6 +47,7 @@ extensions = [
     Extension(
         "edsger.priority_queue_timings", ["src/edsger/priority_queue_timings.pyx"]
     ),
+    Extension("esdger.sssp", ["src/edsger/sssp.pyx"]),
 ]
 
 setup(
@@ -67,6 +68,7 @@ setup(
         ],
         "edsger.priority_queue_timings": ["src/edsger/priority_queue_timings"],
         "edsger.test_heaps": ["src/edsger/test_heaps"],
+        "edsger.sssp": ["src/edsger/sssp"],
     },
     ext_modules=cythonize(
         extensions,
