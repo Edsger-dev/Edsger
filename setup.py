@@ -47,7 +47,7 @@ extensions = [
     Extension(
         "edsger.priority_queue_timings", ["src/edsger/priority_queue_timings.pyx"]
     ),
-    Extension("esdger.sssp", ["src/edsger/sssp.pyx"]),
+    Extension("edsger.sssp", ["src/edsger/sssp.pyx"]),
 ]
 
 setup(
