@@ -15,11 +15,20 @@ def convert_graph_to_csr(
     tail_nodes,
     head_nodes,
     n_vertices):
-    """ Compute the graph forward star using SciPy.
+    """ Compute the CSR representation of the node-node adjacency matrix of the 
+    graph.
+
+    input
+    =====
+    * BinaryHeap* bheap : binary heap
+
+    assumption
+    ==========
+    * edges are sorted by tail vertices first and head vertices second
     """
 
     edge_count = head_nodes.shape[0]
-    data = np.ones(edge_count, dtype=commons.UITYPE)  # fake data
+    data = np.ones(edge_count, dtype=commons.UITYPE)
     csr_mat = csr_matrix(
         (data, (tail_nodes, head_nodes)),
         shape=(n_vertices, n_vertices),
