@@ -64,11 +64,11 @@ setup(
             "src/edsger/priority_queue_binary_heap.pxd"
         ],
         "edsger.priority_queue_fibonacci_heap": [
-            "src/edsger/priority_queue_fibonacci_heap.pxd"
+            "src/edsger/priority_queue_fibonacci_heap"
         ],
         "edsger.priority_queue_timings": ["src/edsger/priority_queue_timings"],
         "edsger.test_heaps": ["src/edsger/test_heaps"],
-        "edsger.sssp": ["src/edsger/sssp"],
+        "edsger.sssp": ["src/edsger/sssp.pxd"],
     },
     ext_modules=cythonize(
         extensions,

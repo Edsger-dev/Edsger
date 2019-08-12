@@ -9,9 +9,10 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 from edsger.priority_queue_binary_heap cimport *
-cimport edsger.commons as commons
+from edsger.commons cimport UITYPE
 
-def convert_sorted_graph_to_csr(
+
+cpdef convert_sorted_graph_to_csr(
     tail_nodes,
     head_nodes,
     n_vertices):
@@ -28,13 +29,13 @@ def convert_sorted_graph_to_csr(
     """
 
     edge_count = head_nodes.shape[0]
-    data = np.ones(edge_count, dtype=commons.UITYPE)
+    data = np.ones(edge_count, dtype=UITYPE)
     csr_mat = csr_matrix(
         (data, (tail_nodes, head_nodes)),
         shape=(n_vertices, n_vertices),
-        dtype=commons.UITYPE)
+        dtype=UITYPE)
 
-    return csr_mat.indptr.astype(commons.UITYPE)
+    return csr_mat.indptr.astype(UITYPE)
 
 
 # cdef void _sssp_bt(

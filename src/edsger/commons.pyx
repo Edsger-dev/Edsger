@@ -3,6 +3,8 @@ import numpy as np
 from timeit import default_timer
 
 
+DTYPE = np.float64
+UITYPE = np.uint32
 INFINITY = np.finfo(dtype=DTYPE).max
 
 
