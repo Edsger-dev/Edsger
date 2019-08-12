@@ -11,7 +11,7 @@ from scipy.sparse import csr_matrix
 from edsger.priority_queue_binary_heap cimport *
 cimport edsger.commons as commons
 
-def convert_graph_to_csr(
+def convert_sorted_graph_to_csr(
     tail_nodes,
     head_nodes,
     n_vertices):
