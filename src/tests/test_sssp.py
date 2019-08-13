@@ -1,11 +1,18 @@
 import numpy as np
+import pytest
 
 from edsger.sssp import convert_sorted_graph_to_csr, sssp_basic
 
 
+@pytest.fixture
+def braess_network_01():
+    csr_indices = np.array([1, 2, 2, 3, 3], dtype=np.uint32)
+    csr_indptr = np.array([0, 2, 4, 5, 5], dtype=np.uint32)
+    edge_weights = np.array([1.0, 2.0, 0.0, 2.0, 1.0], dtype=np.float)
+    return csr_indices, csr_indptr, edge_weights
+
+
 def test_convert_01():
-    """ Braess' network
-    """
     tail_nodes = np.array([0, 0, 1, 1, 2])
     head_nodes = np.array([1, 2, 2, 3, 3])
 
@@ -17,12 +24,8 @@ def test_convert_01():
     assert np.issubdtype(indptr.dtype, np.integer)
 
 
-def test_sssp_01():
-    """ Braess' network
-    """
-    csr_indices = np.array([1, 2, 2, 3, 3], dtype=np.uint32)
-    csr_indptr = np.array([0, 2, 4, 5, 5], dtype=np.uint32)
-    edge_weights = np.array([1.0, 2.0, 0.0, 2.0, 1.0], dtype=np.float)
+def test_sssp_01(braess_network_01):
+    csr_indices, csr_indptr, edge_weights = braess_network_01
 
     travel_time_ref = np.array([0.0, 1.0, 1.0, 2.0], dtype=np.float)
     travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 0, 4)
