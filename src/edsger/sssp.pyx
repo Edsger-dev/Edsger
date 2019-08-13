@@ -47,6 +47,8 @@ cpdef sssp_basic(
     DTYPE_t[:] edge_weights,
     unsigned int origin_vert,
     unsigned int n_vertices):
+    """ Compute single-source shortest path (from one vertex to all vertices).
+    """
 
     cdef:
         UITYPE_t i
@@ -54,31 +56,33 @@ cpdef sssp_basic(
         DTYPE_t edge_weight, tail_vert_val, tmp_scal
         BinaryHeap bheap
         int vert_state
-    travel_time = np.zeros(n_vertices, dtype=DTYPE)
 
+    # initialization (the priority queue is filled with all nodes)
+    # all nodes of INFINITY key
     init_heap(&bheap, n_vertices)
+
+    # the key is set to zero for the origin vertex
     min_heap_insert(&bheap, origin_vert, 0.)
 
+    # main loop
     while bheap.size > 0:
         tail_vert_idx = extract_min(&bheap)
         tail_vert_val = bheap.nodes[tail_vert_idx].key
-
+        # loop on outgoing edges
         for edge_idx in range(csr_indptr[tail_vert_idx], csr_indptr[tail_vert_idx + 1]):
             head_vert_idx = csr_indices[edge_idx]
             vert_state = bheap.nodes[head_vert_idx].state
             head_vert_val = bheap.nodes[head_vert_idx].key
-
             if vert_state != SCANNED:
                 edge_weight = edge_weights[edge_idx]
                 tmp_scal = tail_vert_val + edge_weight
-
                 if vert_state == NOT_IN_HEAP:
                     min_heap_insert(&bheap, head_vert_idx, tmp_scal)
-
                 elif head_vert_val > tmp_scal:
                     decrease_key_from_node_index(&bheap, head_vert_idx, tmp_scal)
 
     # TODO : function to get all keys
+    travel_time = np.zeros(n_vertices, dtype=DTYPE)
     for i in range(n_vertices):
         travel_time[i] = bheap.nodes[i].key
 
