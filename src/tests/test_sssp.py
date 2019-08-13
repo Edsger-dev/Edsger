@@ -29,4 +29,4 @@ def test_sssp_01():
 
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
-    assert np.issubdtype(travel_time.dtype, np.float)
+    assert np.issubdtype(travel_time.dtype, np.floating)
