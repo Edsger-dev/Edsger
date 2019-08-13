@@ -9,7 +9,7 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 from edsger.priority_queue_binary_heap cimport *
-from edsger.commons cimport UITYPE
+from edsger.commons cimport DTYPE, DTYPE_t, UITYPE, UITYPE_t, SCANNED, NOT_IN_HEAP
 
 
 cpdef convert_sorted_graph_to_csr(
@@ -21,11 +21,14 @@ cpdef convert_sorted_graph_to_csr(
 
     input
     =====
-    * BinaryHeap* bheap : binary heap
+
+    output
+    ======
 
     assumption
     ==========
-    * edges are sorted by tail vertices first and head vertices second
+    * edges are sorted by tail vertices first and head vertices second and 
+      and edges have been reindexed
     """
 
     edge_count = head_nodes.shape[0]
@@ -38,77 +41,47 @@ cpdef convert_sorted_graph_to_csr(
     return csr_mat.indptr.astype(UITYPE)
 
 
-# cdef void _sssp_bt(
-#     # int origin,
-#     # int n_vert,   
-#     # int tid,
-#     # DTYPE_t[:] graph_costs,
-#     # ITYPE_t[:] csr_indices,
-#     # ITYPE_t[:] csr_indptr,
-#     # ITYPE_t[:, :] from_vert,
-#     # ITYPE_t[:, :] from_edge,
-#     # DTYPE_t[:, :] tt_mat
-#     ) nogil:
-#     """ Single source shortest path with backtracking variables.
-#     """
+cpdef sssp_basic(
+    UITYPE_t[:] csr_indices,
+    UITYPE_t[:] csr_indptr,
+    DTYPE_t[:] edge_weights,
+    unsigned int origin_vert,
+    unsigned int n_vertices):
 
-#     cdef:
-#         int i, head_vert_idx, vert_idx, edge_idx
-#         double edge_w, tmp_scal
+    cdef:
+        UITYPE_t i
+        UITYPE_t tail_vert_idx, edge_idx, head_vert_idx
+        DTYPE_t edge_weight, tail_vert_val, tmp_scal
+        BinaryHeap bheap
+        int vert_state
+    travel_time = np.zeros(n_vertices, dtype=DTYPE)
 
-#         cdef BinaryHeap bheap
-#         # FibonacciHeap heap
-#         # # FibonacciNode *hnode
-#         # FibonacciNode *head_hnode
-#         # FibonacciNode *hnodes = <FibonacciNode*> malloc(n_vert * sizeof(FibonacciNode))
+    init_heap(&bheap, n_vertices)
+    min_heap_insert(&bheap, origin_vert, 0.)
 
-#     # # init #
-#     # # ---- #
-#     # for i in range(n_vert):
-#     #     initialize_node(&hnodes[i], i)
-#     #     from_vert[i, tid] = -1
-#     #     from_edge[i, tid] = -1
-#     #     tt_mat[i, tid] = 0.0
-#     # heap.min_node = NULL
-#     # insert_node(&heap, &hnodes[origin])
-#     # from_vert[origin, tid] = origin
+    while bheap.size > 0:
+        tail_vert_idx = extract_min(&bheap)
+        tail_vert_val = bheap.nodes[tail_vert_idx].key
 
-#     # # main loop #
-#     # # --------- #
-#     # while heap.min_node:
+        for edge_idx in range(csr_indptr[tail_vert_idx], csr_indptr[tail_vert_idx + 1]):
+            head_vert_idx = csr_indices[edge_idx]
+            vert_state = bheap.nodes[head_vert_idx].state
+            head_vert_val = bheap.nodes[head_vert_idx].key
 
-#     #     # remove vertex with min travel time from heap
-#     #     hnode = remove_min(&heap)
-#     #     hnode.state = SCANNED
-#     #     vert_idx = hnode.index
-#     #     tt_mat[vert_idx, tid] = hnode.val
+            if vert_state != SCANNED:
+                edge_weight = edge_weights[edge_idx]
+                tmp_scal = tail_vert_val + edge_weight
 
-#     #     # loop over outgoing edges
-#     #     for edge_idx in range(csr_indptr[vert_idx], csr_indptr[vert_idx+1]):
+                if vert_state == NOT_IN_HEAP:
+                    min_heap_insert(&bheap, head_vert_idx, tmp_scal)
 
-#     #         head_vert_idx = csr_indices[edge_idx]
-#     #         head_hnode = &hnodes[head_vert_idx]
+                elif head_vert_val > tmp_scal:
+                    decrease_key_from_node_index(&bheap, head_vert_idx, tmp_scal)
 
-#     #         if head_hnode.state != SCANNED:
+    # TODO : function to get all keys
+    for i in range(n_vertices):
+        travel_time[i] = bheap.nodes[i].key
 
-#     #             edge_w = graph_costs[edge_idx]
-#     #             tmp_scal = hnode.val + edge_w
+    free_heap(&bheap)
 
-#     #             if head_hnode.state == NOT_IN_HEAP:
-
-#     #                 head_hnode.val = tmp_scal
-#     #                 head_hnode.state = IN_HEAP
-#     #                 insert_node(&heap, head_hnode)
-
-#     #                 from_vert[head_vert_idx, tid] = vert_idx
-#     #                 from_edge[head_vert_idx, tid] = edge_idx
-
-#     #             elif head_hnode.val > tmp_scal:
-
-#     #                 decrease_val(&heap, head_hnode, tmp_scal)
-
-#     #                 from_vert[head_vert_idx, tid] = vert_idx
-#     #                 from_edge[head_vert_idx, tid] = edge_idx
-
-#     # cleanup
-#     free_heap(&bheap)
+    return travel_time
