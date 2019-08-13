@@ -11,3 +11,5 @@ cdef DTYPE_t INFINITY
 
 ctypedef enum NodeState:
     SCANNED, NOT_IN_HEAP, IN_HEAP
+
+cdef int N_THREADS

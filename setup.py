@@ -5,7 +5,7 @@ import numpy
 import os
 import re
 
-requirements = ["cython", "numpy", "pandas", "scipy"]
+requirements = ["cython", "numpy", "pandas", "scipy", "psutil"]
 setup_requirements = ["cython", "numpy"]
 test_requirements = ["pytest"]
 

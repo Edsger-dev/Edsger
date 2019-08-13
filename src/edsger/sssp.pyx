@@ -7,9 +7,10 @@
 cimport numpy as np
 import numpy as np
 from scipy.sparse import csr_matrix
+from cython.parallel import prange
 
 from edsger.priority_queue_binary_heap cimport *
-from edsger.commons cimport DTYPE, DTYPE_t, UITYPE, UITYPE_t, SCANNED, NOT_IN_HEAP
+from edsger.commons cimport DTYPE, DTYPE_t, UITYPE, UITYPE_t, SCANNED, NOT_IN_HEAP, N_THREADS
 
 
 cpdef convert_sorted_graph_to_csr(
@@ -18,12 +19,6 @@ cpdef convert_sorted_graph_to_csr(
     n_vertices):
     """ Compute the CSR representation of the node-node adjacency matrix of the 
     graph.
-
-    input
-    =====
-
-    output
-    ======
 
     assumption
     ==========
@@ -51,11 +46,10 @@ cpdef sssp_basic(
     """
 
     cdef:
-        UITYPE_t i
-        UITYPE_t tail_vert_idx, edge_idx, head_vert_idx
-        DTYPE_t edge_weight, tail_vert_val, tmp_scal
-        BinaryHeap bheap
-        int vert_state
+        UITYPE_t tail_vert_idx, head_vert_idx, edge_idx  # vertex and edge indices
+        DTYPE_t tail_vert_val, head_vert_val  # vertex travel times
+        BinaryHeap bheap  # binary heap
+        int vert_state  # vertex state
 
     # initialization (the priority queue is filled with all nodes)
     # all nodes of INFINITY key
@@ -72,20 +66,25 @@ cpdef sssp_basic(
         for edge_idx in range(csr_indptr[tail_vert_idx], csr_indptr[tail_vert_idx + 1]):
             head_vert_idx = csr_indices[edge_idx]
             vert_state = bheap.nodes[head_vert_idx].state
-            head_vert_val = bheap.nodes[head_vert_idx].key
             if vert_state != SCANNED:
-                edge_weight = edge_weights[edge_idx]
-                tmp_scal = tail_vert_val + edge_weight
+                head_vert_val = tail_vert_val + edge_weights[edge_idx]
                 if vert_state == NOT_IN_HEAP:
-                    min_heap_insert(&bheap, head_vert_idx, tmp_scal)
-                elif head_vert_val > tmp_scal:
-                    decrease_key_from_node_index(&bheap, head_vert_idx, tmp_scal)
+                    min_heap_insert(&bheap, head_vert_idx, head_vert_val)
+                elif bheap.nodes[head_vert_idx].key > head_vert_val:
+                    decrease_key_from_node_index(&bheap, head_vert_idx, head_vert_val)
 
-    # TODO : function to get all keys
-    travel_time = np.zeros(n_vertices, dtype=DTYPE)
-    for i in range(n_vertices):
-        travel_time[i] = bheap.nodes[i].key
+    # copy the results into a numpy array
+    travel_times = np.zeros(n_vertices, dtype=DTYPE)
+    cdef:
+        UITYPE_t i  # loop counter
+        DTYPE_t[:] travel_times_view = travel_times
+    for i in prange(
+        n_vertices, 
+        schedule=guided, 
+        nogil=True, 
+        num_threads=N_THREADS):
+        travel_times_view[i] = bheap.nodes[i].key
 
-    free_heap(&bheap)
+    free_heap(&bheap)  # cleanup
 
-    return travel_time
+    return travel_times

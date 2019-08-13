@@ -1,12 +1,12 @@
 cimport numpy as np
 import numpy as np
 from timeit import default_timer
-
+import psutil
 
 DTYPE = np.float64
 UITYPE = np.uint32
 INFINITY = np.finfo(dtype=DTYPE).max
-
+N_THREADS = psutil.cpu_count()
 
 class Timer(object):
     def __init__(self):
