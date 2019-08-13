@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 
 from edsger.sssp import convert_sorted_graph_to_csr, sssp_basic
+from edsger.commons import INFINITY_PY
 
 
 @pytest.fixture
@@ -33,3 +34,16 @@ def test_sssp_01(braess_network_01):
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
+
+
+def test_sssp_02(braess_network_01):
+    csr_indices, csr_indptr, edge_weights = braess_network_01
+
+    travel_time_ref = np.ones(4, dtype=np.float)
+    # travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 4, 0)
+    print(INFINITY_PY)
+    # print(travel_time)
+    # assert isinstance(travel_time, np.ndarray)
+    # np.testing.assert_array_equal(travel_time_ref, travel_time)
+    # assert np.issubdtype(travel_time.dtype, np.floating)
+    assert True
