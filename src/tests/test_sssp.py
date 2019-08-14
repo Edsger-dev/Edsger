@@ -81,7 +81,18 @@ def test_sssp_02(braess_network_01):
 
     travel_time_ref = np.array([0.0, 1.0, 1.0, 2.0], dtype=np.float)
     travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 0, 4)
+    assert isinstance(travel_time, np.ndarray)
+    np.testing.assert_array_equal(travel_time_ref, travel_time)
+    assert np.issubdtype(travel_time.dtype, np.floating)
 
+    travel_time_ref = np.array([INFINITY_PY, 0.0, 0.0, 1.0], dtype=np.float)
+    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 1, 4)
+    assert isinstance(travel_time, np.ndarray)
+    np.testing.assert_array_equal(travel_time_ref, travel_time)
+    assert np.issubdtype(travel_time.dtype, np.floating)
+
+    travel_time_ref = np.array([INFINITY_PY, INFINITY_PY, 0.0, 1.0], dtype=np.float)
+    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 2, 4)
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
@@ -90,7 +101,6 @@ def test_sssp_02(braess_network_01):
         [INFINITY_PY, INFINITY_PY, INFINITY_PY, 0.0], dtype=np.float
     )
     travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 3, 4)
-
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
