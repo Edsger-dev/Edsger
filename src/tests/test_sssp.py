@@ -19,6 +19,8 @@ def one_edge_01():
 
 @pytest.fixture
 def braess_network_01():
+    """ Braess-like network in CSR format.
+    """
 
     csr_indices = np.array([1, 2, 2, 3, 3], dtype=np.uint32)
     csr_indptr = np.array([0, 2, 4, 5, 5], dtype=np.uint32)
@@ -27,22 +29,31 @@ def braess_network_01():
 
 
 def test_convert_01(one_edge_01):
+    """ Test of the conversion from a sorted graph (tail node index first, 
+    head node index second) to a CSR format.
 
+    The sorted graph is the following one (single-edge network):
+    edge index: 0
+    tail nodes: 0
+    head nodes: 1
+    """
+
+    # data loading
     graph_edges = one_edge_01
-
     tail_nodes = graph_edges.tail_vert.values
     head_nodes = graph_edges.head_vert.values
 
+    # conversion
     indptr_ref = np.array([0, 1, 1], dtype=np.uint32)
     indptr = convert_sorted_graph_to_csr(tail_nodes, head_nodes, 2)
-
     assert isinstance(indptr, np.ndarray)
     np.testing.assert_array_equal(indptr_ref, indptr)
     assert np.issubdtype(indptr.dtype, np.integer)
 
 
 def test_convert_02():
-    """ Test of the conversion from a sorted graph (tail node index first, head node index second) to a CSR format.
+    """ Test of the conversion from a sorted graph (tail node index first, 
+    head node index second) to a CSR format.
 
     The sorted graph is the following one (Braess-like network):
     edge index: 0, 1, 2, 3, 4
@@ -54,7 +65,7 @@ def test_convert_02():
     tail_nodes = np.array([0, 0, 1, 1, 2])
     head_nodes = np.array([1, 2, 2, 3, 3])
 
-    #
+    # conversion
     indptr_ref = np.array([0, 2, 4, 5, 5], dtype=np.uint32)
     indptr = convert_sorted_graph_to_csr(tail_nodes, head_nodes, 4)
     assert isinstance(indptr, np.ndarray)
