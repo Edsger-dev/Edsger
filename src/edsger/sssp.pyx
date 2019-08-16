@@ -36,7 +36,7 @@ cpdef convert_sorted_graph_to_csr(
     return csr_mat.indptr.astype(UITYPE)
 
 
-cpdef sssp_basic(
+cpdef path_length(
     UITYPE_t[:] csr_indices,
     UITYPE_t[:] csr_indptr,
     DTYPE_t[:] edge_weights,
@@ -74,17 +74,17 @@ cpdef sssp_basic(
                     decrease_key_from_node_index(&bheap, head_vert_idx, head_vert_val)
 
     # copy the results into a numpy array
-    travel_times = np.zeros(n_vertices, dtype=DTYPE)
+    path_lengths = np.zeros(n_vertices, dtype=DTYPE)
     cdef:
         UITYPE_t i  # loop counter
-        DTYPE_t[:] travel_times_view = travel_times
+        DTYPE_t[:] path_lengths_view = path_lengths
     for i in prange(
         n_vertices, 
         schedule=guided, 
         nogil=True, 
         num_threads=N_THREADS):
-        travel_times_view[i] = bheap.nodes[i].key
+        path_lengths_view[i] = bheap.nodes[i].key
 
     free_heap(&bheap)  # cleanup
 
-    return travel_times
+    return path_lengths

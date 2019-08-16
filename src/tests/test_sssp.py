@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from edsger.sssp import convert_sorted_graph_to_csr, sssp_basic
+from edsger.sssp import convert_sorted_graph_to_csr, path_length
 from edsger.commons import INFINITY_PY
 
 
@@ -89,14 +89,14 @@ def test_sssp_01(one_edge_01):
 
     # origin: node 0
     travel_time_ref = np.array([0.0, 1.0], dtype=np.float)
-    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 0, 2)
+    travel_time = path_length(csr_indices, csr_indptr, edge_weights, 0, 2)
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
 
     # origin: node 1
     travel_time_ref = np.array([INFINITY_PY, 0.0], dtype=np.float)
-    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 1, 2)
+    travel_time = path_length(csr_indices, csr_indptr, edge_weights, 1, 2)
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
@@ -111,21 +111,21 @@ def test_sssp_02(braess_network_01):
 
     # origin: node 0
     travel_time_ref = np.array([0.0, 1.0, 1.0, 2.0], dtype=np.float)
-    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 0, 4)
+    travel_time = path_length(csr_indices, csr_indptr, edge_weights, 0, 4)
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
 
     # origin: node 1
     travel_time_ref = np.array([INFINITY_PY, 0.0, 0.0, 1.0], dtype=np.float)
-    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 1, 4)
+    travel_time = path_length(csr_indices, csr_indptr, edge_weights, 1, 4)
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
 
     # origin: node 2
     travel_time_ref = np.array([INFINITY_PY, INFINITY_PY, 0.0, 1.0], dtype=np.float)
-    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 2, 4)
+    travel_time = path_length(csr_indices, csr_indptr, edge_weights, 2, 4)
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
@@ -134,7 +134,7 @@ def test_sssp_02(braess_network_01):
     travel_time_ref = np.array(
         [INFINITY_PY, INFINITY_PY, INFINITY_PY, 0.0], dtype=np.float
     )
-    travel_time = sssp_basic(csr_indices, csr_indptr, edge_weights, 3, 4)
+    travel_time = path_length(csr_indices, csr_indptr, edge_weights, 3, 4)
     assert isinstance(travel_time, np.ndarray)
     np.testing.assert_array_equal(travel_time_ref, travel_time)
     assert np.issubdtype(travel_time.dtype, np.floating)
