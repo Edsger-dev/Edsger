@@ -86,7 +86,7 @@ cpdef np.ndarray path_length(
         n_vertices, 
         schedule=guided, 
         nogil=True, 
-        num_threads=N_THREADS):
+        num_threads=num_threads):
         path_lengths_view[i] = bheap.nodes[i].key
 
     free_heap(&bheap)  # cleanup
