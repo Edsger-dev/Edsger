@@ -36,12 +36,13 @@ cpdef convert_sorted_graph_to_csr(
     return csr_mat.indptr.astype(UITYPE)
 
 
-cpdef path_length(
+cpdef np.ndarray path_length(
     UITYPE_t[:] csr_indices,
     UITYPE_t[:] csr_indptr,
     DTYPE_t[:] edge_weights,
     unsigned int origin_vert,
-    unsigned int n_vertices):
+    unsigned int n_vertices,
+    int n_jobs=1):
     """ Compute single-source shortest path (from one vertex to all vertices).
     """
 
@@ -78,6 +79,9 @@ cpdef path_length(
     cdef:
         UITYPE_t i  # loop counter
         DTYPE_t[:] path_lengths_view = path_lengths
+        int num_threads = n_jobs
+    if num_threads < 1:
+        num_threads = N_THREADS
     for i in prange(
         n_vertices, 
         schedule=guided, 
