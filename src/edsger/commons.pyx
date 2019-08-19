@@ -5,6 +5,7 @@ import psutil
 
 DTYPE = np.float64
 UITYPE = np.uint32
+UITYPE_PY = UITYPE
 INFINITY = np.finfo(dtype=DTYPE).max
 INFINITY_PY = INFINITY
 N_THREADS = psutil.cpu_count()
