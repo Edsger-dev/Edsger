@@ -1,4 +1,3 @@
-cimport numpy as np
 import numpy as np
 from timeit import default_timer
 import psutil
@@ -9,6 +8,7 @@ UITYPE_PY = UITYPE
 INFINITY = np.finfo(dtype=DTYPE).max
 INFINITY_PY = INFINITY
 N_THREADS = psutil.cpu_count()
+
 
 class Timer(object):
     def __init__(self):

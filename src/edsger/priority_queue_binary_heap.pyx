@@ -51,29 +51,41 @@
 # COMPILER DIRECTIVES
 
 from libc.stdlib cimport malloc, free
+from edsger.commons cimport UITYPE_t
 
 cimport edsger.commons as commons
-
+# from cython.parallel import prange
 
 cdef void init_heap(
     BinaryHeap* bheap,
-    unsigned int length) nogil:
+    UITYPE_t length) nogil:
     """Initialize the binary heap.
 
     input
     =====
     * BinaryHeap* bheap : binary heap
-    * unsigned int length : length (maximum size) of the binary heap
+    * UITYPE_t length : length (maximum size) of the binary heap
     """
-    cdef unsigned int i
+    cdef UITYPE_t i  # array index
 
     bheap.length = length
     bheap.size = 0
-    bheap.A = <unsigned int*> malloc(length * sizeof(unsigned int))
+    bheap.A = <UITYPE_t*> malloc(length * sizeof(UITYPE_t))
     bheap.nodes = <Node*> malloc(length * sizeof(Node))
     for i in range(length):
         bheap.A[i] = length
         _initialize_node(bheap, i)
+
+    # test of parallel initialization
+    # cdef:
+    #     int j
+    # for j in prange(
+    #     length, 
+    #     schedule=guided, 
+    #     nogil=True, 
+    #     num_threads=commons.N_THREADS):
+    #     bheap.A[j] = length
+    #     _initialize_node(bheap, j)
 
 
 cdef void free_heap(
@@ -90,13 +102,13 @@ cdef void free_heap(
 
 cdef void _initialize_node(
     BinaryHeap* bheap,
-    unsigned int node_idx) nogil:
+    UITYPE_t node_idx) nogil:
     """Initialize a single node of the heap.
 
     input
     =====
     * BinaryHeap* bheap : binary heap
-    * unsigned int node_idx : node index
+    * intp_t node_idx : node array index
     """
     bheap.nodes[node_idx].key = commons.INFINITY
     bheap.nodes[node_idx].state = commons.NOT_IN_HEAP
@@ -105,14 +117,14 @@ cdef void _initialize_node(
 
 cdef void min_heap_insert(
     BinaryHeap* bheap,
-    unsigned int node_idx,
+    UITYPE_t node_idx,
     DTYPE_t key) nogil:
     """Insert a Node into the heap and reorder the heap.
 
     input
     =====
     * BinaryHeap* bheap : binary heap
-    * unsigned int node_idx : index of the node in the node array
+    * UITYPE_t node_idx : index of the node in the node array
     * DTYPE_t key : key value of the Node
 
     assumptions
@@ -120,26 +132,26 @@ cdef void min_heap_insert(
     * node bheap.nodes[node_idx] is not in the heap
     * key is smaller than INFINITY
     """
-    cdef unsigned int tree_idx = bheap.size
+    cdef UITYPE_t tree_idx = bheap.size
 
     bheap.size += 1
     bheap.nodes[node_idx].key = commons.INFINITY
     bheap.nodes[node_idx].state = commons.IN_HEAP
     bheap.nodes[node_idx].tree_idx = tree_idx
-    bheap.A[bheap.size-1] = node_idx
+    bheap.A[tree_idx] = node_idx
     _decrease_key_from_tree_index(bheap, tree_idx, key)
 
 
 cdef void decrease_key_from_node_index(
     BinaryHeap* bheap, 
-    unsigned int node_idx, 
+    UITYPE_t node_idx, 
     DTYPE_t key_new) nogil:
     """Decrease the key of a node in the heap, given its node index.
 
     input
     =====
     * BinaryHeap* bheap : binary heap
-    * unsigned int node_idx : index of the node in the node array
+    * UITYPE_t node_idx : index of the node in the node array
     * DTYPE_t key_new : new value of the node key 
 
     assumption
@@ -186,7 +198,7 @@ cdef bint is_empty(BinaryHeap* bheap) nogil:
     return isempty
 
 
-cdef unsigned int extract_min(BinaryHeap* bheap) nogil:
+cdef UITYPE_t extract_min(BinaryHeap* bheap) nogil:
     """Extract heap min.
 
     input
@@ -195,15 +207,15 @@ cdef unsigned int extract_min(BinaryHeap* bheap) nogil:
 
     output
     ======
-    * unsigned int : min node index
+    * UITYPE_t : min node index
 
     assumption
     ==========
     * bheap.size > 0
     """
     cdef: 
-        unsigned int node_idx
-        unsigned int i = bheap.size - 1
+        UITYPE_t node_idx
+        UITYPE_t i = bheap.size - 1
 
     # update min node' state
     bheap.nodes[bheap.A[0]].state = commons.SCANNED
@@ -225,12 +237,12 @@ cdef unsigned int extract_min(BinaryHeap* bheap) nogil:
     return node_idx
 
 
-cdef unsigned int _parent(unsigned int i) nogil:
+cdef UITYPE_t _parent(UITYPE_t i) nogil:
     """Get the tree index of the parent node.
 
     input
     =====
-    unsigned int i: tree index
+    UITYPE_t i: tree index
 
     assumption
     ==========
@@ -239,41 +251,41 @@ cdef unsigned int _parent(unsigned int i) nogil:
     return (i - 1) // 2
 
 
-cdef unsigned int _left_child(unsigned int i) nogil:
+cdef UITYPE_t _left_child(UITYPE_t i) nogil:
     """Returns the left child node.
 
     input
     =====
-    * unsigned int i : tree index
+    * UITYPE_t i : tree index
     """
     return 2 * i + 1
 
 
-cdef unsigned int _right_child(unsigned int i) nogil:
+cdef UITYPE_t _right_child(UITYPE_t i) nogil:
     """Returns the right child node.
 
     input
     =====
-    * unsigned int i : tree index
+    * UITYPE_t i : tree index
     """
     return 2 * (i + 1)
 
 
 cdef void _exchange_nodes(
     BinaryHeap* bheap, 
-    unsigned int i,
-    unsigned int j) nogil:
+    UITYPE_t i,
+    UITYPE_t j) nogil:
     """Exchange two nodes in the heap.
 
     input
     =====
     * BinaryHeap* bheap: binary heap
-    * unsigned int i: first heap array index
-    * unsigned int j: second heap array index
+    * UITYPE_t i: first heap array index
+    * UITYPE_t j: second heap array index
     """
     cdef: 
-        unsigned int a_i = bheap.A[i]
-        unsigned int a_j = bheap.A[j]
+        UITYPE_t a_i = bheap.A[i]
+        UITYPE_t a_j = bheap.A[j]
     
     # exchange node indices in the heap array
     bheap.A[i] = a_j
@@ -286,7 +298,7 @@ cdef void _exchange_nodes(
 
 cdef void _min_heapify(
     BinaryHeap* bheap, 
-    unsigned int tree_idx) nogil:
+    UITYPE_t tree_idx) nogil:
     """Re-order sub-tree under a given node (given its tree index) 
     until it satisfies the heap property.
 
@@ -295,10 +307,10 @@ cdef void _min_heapify(
     input
     =====
     * BinaryHeap* bheap : binary heap
-    * unsigned int tree_idx : tree index
+    * UITYPE_t tree_idx : tree index
     """
     cdef: 
-        unsigned int l, r, s = tree_idx, node_idx
+        UITYPE_t l, r, s = tree_idx, node_idx
     
     node_idx = bheap.A[s]
 
@@ -321,21 +333,21 @@ cdef void _min_heapify(
 
 cdef void _decrease_key_from_tree_index(
     BinaryHeap* bheap, 
-    unsigned int tree_idx, 
+    UITYPE_t tree_idx, 
     DTYPE_t key_new) nogil:
     """Decrease the key of a node in the heap, given its tree index.
 
     input
     =====
     * BinaryHeap* bheap : binary heap
-    * unsigned int tree_idx : tree index
+    * UITYPE_t tree_idx : tree index
 
     assumptions
     ===========
     * bheap.nodes[bheap.A[i]] is in the heap (i < bheap.size)
     * key_new < bheap.nodes[bheap.A[i]].key
     """
-    cdef unsigned int i = tree_idx
+    cdef UITYPE_t i = tree_idx
 
     bheap.nodes[bheap.A[i]].key = key_new
     while i > 0: 
