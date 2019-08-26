@@ -29,7 +29,7 @@ def braess_network_01():
 
 
 def test_convert_01(one_edge_01):
-    """ Test of the conversion from a sorted graph (tail node index first, 
+    """ Test of the conversion from a sorted graph (tail node index first,
     head node index second) to a CSR format.
 
     The sorted graph is the following one (single-edge network):
@@ -52,7 +52,7 @@ def test_convert_01(one_edge_01):
 
 
 def test_convert_02():
-    """ Test of the conversion from a sorted graph (tail node index first, 
+    """ Test of the conversion from a sorted graph (tail node index first,
     head node index second) to a CSR format.
 
     The sorted graph is the following one (Braess-like network):
