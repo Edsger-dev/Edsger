@@ -24,7 +24,7 @@ cdef sort(unsigned int n=100, seed=124):
     timer = Timer()
     timer.start()
     sorted_values = np.empty(n)
-    init_heap(&bheap, n)
+    init_heap(&bheap, n, 1)
     for i in range(n):
         min_heap_insert(&bheap, i, values[i])
     for i in range(n):

@@ -42,7 +42,7 @@ cpdef cnp.ndarray path_length(
     DTYPE_t[:] edge_weights,
     UITYPE_t origin_vert,
     UITYPE_t n_vertices,
-    int n_jobs=1):
+    int n_jobs=-1):
     """ Compute single-source shortest path (from one vertex to all vertices).
     """
 
@@ -51,10 +51,13 @@ cpdef cnp.ndarray path_length(
         DTYPE_t tail_vert_val, head_vert_val  # vertex travel times
         BinaryHeap bheap  # binary heap
         int vert_state  # vertex state
+        int num_threads = n_jobs
 
+    if num_threads < 1:
+        num_threads = N_THREADS
     # initialization (the priority queue is filled with all nodes)
     # all nodes of INFINITY key
-    init_heap(&bheap, n_vertices)
+    init_heap(&bheap, n_vertices, num_threads)
 
     # the key is set to zero for the origin vertex
     min_heap_insert(&bheap, origin_vert, 0.)
@@ -79,9 +82,7 @@ cpdef cnp.ndarray path_length(
     cdef:
         int i  # loop counter
         DTYPE_t[:] path_lengths_view = path_lengths
-        int num_threads = n_jobs
-    if num_threads < 1:
-        num_threads = N_THREADS
+
     for i in prange(
         n_vertices, 
         schedule=guided, 

@@ -54,11 +54,12 @@ from libc.stdlib cimport malloc, free
 from edsger.commons cimport UITYPE_t
 
 cimport edsger.commons as commons
-# from cython.parallel import prange
+from cython.parallel import prange
 
 cdef void init_heap(
     BinaryHeap* bheap,
-    UITYPE_t length) nogil:
+    UITYPE_t length,
+    int num_threads) nogil:
     """Initialize the binary heap.
 
     input
@@ -66,26 +67,23 @@ cdef void init_heap(
     * BinaryHeap* bheap : binary heap
     * UITYPE_t length : length (maximum size) of the binary heap
     """
-    cdef UITYPE_t i  # array index
+    cdef: 
+        int i  # array index
+        UITYPE_t idx
 
     bheap.length = length
     bheap.size = 0
     bheap.A = <UITYPE_t*> malloc(length * sizeof(UITYPE_t))
     bheap.nodes = <Node*> malloc(length * sizeof(Node))
-    for i in range(length):
-        bheap.A[i] = length
-        _initialize_node(bheap, i)
 
-    # test of parallel initialization
-    # cdef:
-    #     int j
-    # for j in prange(
-    #     length, 
-    #     schedule=guided, 
-    #     nogil=True, 
-    #     num_threads=commons.N_THREADS):
-    #     bheap.A[j] = length
-    #     _initialize_node(bheap, j)
+    for i in prange(
+        length, 
+        schedule=guided, 
+        nogil=True, 
+        num_threads=num_threads):
+        idx = <UITYPE_t>i
+        bheap.A[idx] = length
+        _initialize_node(bheap, <UITYPE_t>idx)
 
 
 cdef void free_heap(
