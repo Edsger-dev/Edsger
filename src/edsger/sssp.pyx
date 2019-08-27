@@ -88,8 +88,14 @@ cpdef cnp.ndarray path_length(
         schedule=guided, 
         nogil=True, 
         num_threads=num_threads):
-        path_lengths_view[i] = bheap.nodes[i].key
+        path_lengths_view[i] = bheap.nodes[i].key 
 
     free_heap(&bheap)  # cleanup
 
     return path_lengths
+
+
+class Path(object):
+
+    def __init__(self, df, source='source', target='target', weight='weight'):
+        print('yeah')
