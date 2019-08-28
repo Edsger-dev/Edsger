@@ -47,7 +47,7 @@ extensions = [
     Extension(
         "edsger.priority_queue_timings", ["src/edsger/priority_queue_timings.pyx"]
     ),
-    Extension("edsger.sssp", ["src/edsger/sssp.pyx"]),
+    Extension("edsger.shortestpath", ["src/edsger/shortestpath.pyx"]),
 ]
 
 setup(
@@ -57,18 +57,16 @@ setup(
     author="Edsger devs",
     author_email="pacullfrancois@gmail.com",
     license=license,
-    package_dir={"edsger": "src/edsger"},
+    package_dir={"": "src"},
+    packages=find_packages(where="src"),
     package_data={
         "edsger.commons": ["src/edsger/commons.pxd"],
         "edsger.priority_queue_binary_heap": [
             "src/edsger/priority_queue_binary_heap.pxd"
         ],
         "edsger.priority_queue_fibonacci_heap": [
-            "src/edsger/priority_queue_fibonacci_heap"
+            "src/edsger/priority_queue_fibonacci_heap.pxd"
         ],
-        "edsger.priority_queue_timings": ["src/edsger/priority_queue_timings"],
-        "edsger.test_heaps": ["src/edsger/test_heaps"],
-        "edsger.sssp": ["src/edsger/sssp.pxd"],
     },
     ext_modules=cythonize(
         extensions,
@@ -80,5 +78,4 @@ setup(
     tests_require=test_requirements,
     extras_require={"test": test_requirements},
     include_dirs=[numpy.get_include()],
-    packages=find_packages(),
 )
