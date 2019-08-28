@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from edsger.sssp import convert_sorted_graph_to_csr, path_length
+from edsger.shortestpath import convert_sorted_graph_to_csr, path_length
 from edsger.commons import INFINITY_PY, UITYPE_PY
 
 
@@ -73,7 +73,7 @@ def test_convert_02():
     assert np.issubdtype(indptr.dtype, np.integer)
 
 
-def test_sssp_01(one_edge_01):
+def test_shortestpath_01(one_edge_01):
     """ Test of the basic single-source shortest path algorithm on a one-edge network.
     """
 
@@ -102,7 +102,7 @@ def test_sssp_01(one_edge_01):
     assert np.issubdtype(travel_time.dtype, np.floating)
 
 
-def test_sssp_02(braess_network_01):
+def test_shortestpath_02(braess_network_01):
     """ Test of the basic single-source shortest path algorithm on a Braess-like network.
     """
 

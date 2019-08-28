@@ -93,9 +93,3 @@ cpdef cnp.ndarray path_length(
     free_heap(&bheap)  # cleanup
 
     return path_lengths
-
-
-class Path(object):
-
-    def __init__(self, df, source='source', target='target', weight='weight'):
-        print('yeah')
