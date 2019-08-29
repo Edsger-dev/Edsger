@@ -41,3 +41,14 @@ def test_load_edges(braess):
         Path(edges_df.astype({"weight": str}))
     with pytest.raises(ValueError, match=r"should not be negative"):
         Path(pd.concat([edges_df[["source", "target"]], edges_df.weight * -1], axis=1))
+    with pytest.raises(ValueError, match=r"should be finite"):
+        Path(
+            pd.concat(
+                [edges_df[["source", "target"]], edges_df.weight.replace(1.0, np.inf)],
+                axis=1,
+            )
+        )
+    # with pytest.raises(ValueError, match=r"no parallel edges in the graph"):
+    #     Path(edges_df.append({"source": 2, "target": 3, "weight": 1.0}, ignore_index=True))
+    # with pytest.raises(ValueError, match=r"no loop in the graph"):
+    #     Path(edges_df.append({"source": 3, "target": 3, "weight": 1.0}, ignore_index=True))

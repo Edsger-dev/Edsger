@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from edsger.shortestpath import convert_sorted_graph_to_csr, path_length
@@ -37,22 +38,13 @@ class Path(object):
         if edges_df[weight].min() < 0.0:
             raise ValueError(f"edges_df[{weight}] should not be negative")
 
+        if not np.isfinite(edges_df[weight]).all():
+            raise ValueError(f"edges_df[{weight}] should be finite")
+
+        # the graph must be a Simple directed graphs
+        if edges_df.duplicated(subset=[source, target]).any():
+            raise ValueError("there should be no parallel edges in the graph")
+        if len(edges_df[source] == edges_df[target]) > 0:
+            raise ValueError("there should be no loop in the graph")
+
         self._edges = edges_df[[source, target, weight]].copy(deep=True)
-        # if np.amax(self._edges['t0'].values) == np.inf:
-        #     raise ValueError("edge attribute 't0' should not be infinite")
-
-        # if np.amin(self._edges['capacity'].values) < 0.0:
-        #     raise ValueError("edge attribute 'capacity' should be non-negative numbers")
-
-        # if np.amax(self._edges['capacity'].values) == np.inf:
-        #     raise ValueError("edge attribute 'capacity' should not be infinite")
-
-        # # the graph must be a Simple directed graphs
-        # if len(self._edges.drop_duplicates(subset=['tail', 'head'])) < len(self._edges):
-        #     raise ValueError("there should be no parallel edges in the graph")
-        # if len(self._edges[self._edges["tail"] == self._edges["head"]]) > 0:
-        #     raise ValueError("there should be no loop in the graph")
-
-        # if self._connectors:
-        #     if self._edges['connector'].dtype != bool:
-        #         raise TypeError("The column named '{}' of the graph edges dataframe should be of bool type".format('connector'))
