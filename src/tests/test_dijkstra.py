@@ -48,7 +48,11 @@ def test_load_edges(braess):
                 axis=1,
             )
         )
-    # with pytest.raises(ValueError, match=r"no parallel edges in the graph"):
-    #     Path(edges_df.append({"source": 2, "target": 3, "weight": 1.0}, ignore_index=True))
-    # with pytest.raises(ValueError, match=r"no loop in the graph"):
-    #     Path(edges_df.append({"source": 3, "target": 3, "weight": 1.0}, ignore_index=True))
+    with pytest.raises(ValueError, match=r"no parallel edges in the graph"):
+        Path(pd.concat([edges_df, edges_df.iloc[-2:-1]], axis=0, ignore_index=True))
+    with pytest.raises(ValueError, match=r"no loop in the graph"):
+        Path(
+            edges_df.append(
+                {"source": 3, "target": 3, "weight": 1.0}, ignore_index=True
+            ).astype({"source": int, "target": int})
+        )
