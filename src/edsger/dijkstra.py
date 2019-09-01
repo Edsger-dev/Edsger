@@ -15,7 +15,8 @@ class Path(object):
     ):
         if check_edges:
             self._check_edges(edges_df, source, target, weight)
-        self._edges = edges_df[[source, target, weight]].copy(deep=True)
+        self._edges = edges_df[[source, target, weight]]
+        self._vertices = self._permute_graph(source, target)
 
     def _check_edges(self, edges_df, source, target, weight):
 
@@ -52,5 +53,44 @@ class Path(object):
         # the graph must be a Simple directed graphs
         if edges_df.duplicated(subset=[source, target]).any():
             raise ValueError("there should be no parallel edges in the graph")
-        if len(edges_df[source] == edges_df[target]) > 0:
+        if (edges_df[source] == edges_df[target]).any():
             raise ValueError("there should be no loop in the graph")
+
+    def _permute_graph(self, source, target):
+        """ Create a vertex table and reindex the vertices.
+        """
+
+        vertices = pd.DataFrame(
+            data={
+                "vert_idx": np.union1d(
+                    self._edges[source].values, self._edges[target].values
+                )
+            }
+        )
+        vertices["vert_idx_new"] = vertices.index
+
+        self._edges = pd.merge(
+            self._edges,
+            vertices[["vert_idx", "vert_idx_new"]],
+            left_on=source,
+            right_on="vert_idx",
+            how="left",
+        )
+        self._edges.drop([source, "vert_idx"], axis=1, inplace=True)
+        self._edges.rename(columns={"vert_idx_new": source}, inplace=True)
+
+        self._edges = pd.merge(
+            self._edges,
+            vertices[["vert_idx", "vert_idx_new"]],
+            left_on=target,
+            right_on="vert_idx",
+            how="left",
+        )
+        self._edges.drop([target, "vert_idx"], axis=1, inplace=True)
+        self._edges.rename(columns={"vert_idx_new": target}, inplace=True)
+
+        vertices.rename(columns={"vert_idx": "vert_idx_old"}, inplace=True)
+        vertices.reset_index(drop=True, inplace=True)
+        vertices.index.name = "index"
+
+        return vertices
