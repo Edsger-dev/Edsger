@@ -57,6 +57,7 @@ def test_load_edges(braess):
             ).astype({"source": int, "target": int})
         )
 
+
 def test_permute_graph():
 
     edges_df = pd.DataFrame(
@@ -67,18 +68,18 @@ def test_permute_graph():
         }
     )
     path = Path(edges_df)
-# vert_idx_old  vert_idx_new
-# index                            
-# 0                 5             0
-# 1                10             1
-# 2                20             2
-# 3                30             3
-#    weight  source  target
-# 0     1.0       0       1
-# 1     2.0       0       2
-# 2     0.0       1       2
-# 3     2.0       1       3
-# 4     1.0       2       3
+    # vert_idx_old  vert_idx_new
+    # index
+    # 0                 5             0
+    # 1                10             1
+    # 2                20             2
+    # 3                30             3
+    #    weight  source  target
+    # 0     1.0       0       1
+    # 1     2.0       0       2
+    # 2     0.0       1       2
+    # 3     2.0       1       3
+    # 4     1.0       2       3
 
     print(path._vertices)
     print(path._edges)

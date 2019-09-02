@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from edsger.shortestpath import convert_sorted_graph_to_csr, path_length
+# from edsger.shortestpath import convert_sorted_graph_to_csr, path_length
 
 
 class Path(object):
@@ -34,7 +34,8 @@ class Path(object):
 
         if edges_df[[source, target, weight]].isna().any().any():
             raise ValueError(
-                f"edges_df[[{source}, {target}, {weight}]] should not have missing values"
+                f"edges_df[[{source}, {target}, {weight}]] should not have missing 
+                values"
             )
 
         for col in [source, target]:
