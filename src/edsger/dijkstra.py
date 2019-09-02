@@ -34,7 +34,10 @@ class Path(object):
 
         if edges_df[[source, target, weight]].isna().any().any():
             raise ValueError(
-                f"edges_df[[{source}, {target}, {weight}]] should not have missing values"
+                " ".join(
+                    f"edges_df[[{source}, {target}, {weight}]] ",
+                    "should not have missing values",
+                )
             )
 
         for col in [source, target]:
