@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from edsger.shortestpath import convert_sorted_graph_to_csr
+from edsger.shortestpath import convert_sorted_graph_to_csr, convert_sorted_graph_to_csc
 from edsger.commons import UITYPE_PY
 
 
