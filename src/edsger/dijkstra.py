@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from edsger.shortestpath import convert_sorted_graph_to_csr, convert_sorted_graph_to_csc
-from edsger.commons import UITYPE_PY
+from edsger.commons import UITYPE_PY, DTYPE_PY
 
 
 class Path(object):
@@ -32,7 +32,7 @@ class Path(object):
             self._edges.sort_values(by=[target, source], inplace=True)
         self._tail_vert = self._edges[source].values.astype(UITYPE_PY)
         self._head_vert = self._edges[target].values.astype(UITYPE_PY)
-        self._edge_weights = self._edges[weight].values
+        self._edge_weights = self._edges[weight].values.astype(DTYPE_PY)
 
         self._check_orientation(orientation)
         if orientation == "one-to-all":
