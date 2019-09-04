@@ -82,3 +82,10 @@ def test_permute_graph():
     edges_ref.index.name = "index"
     pd.testing.assert_frame_equal(vertices_ref, path._vertices, check_like=True)
     pd.testing.assert_frame_equal(edges_ref, path._edges, check_like=True)
+
+
+def test_check_orientation(braess):
+
+    edges_df = braess
+    with pytest.raises(ValueError, match=r"orientation should be either"):
+        Path(edges_df, orientation="onetoall")

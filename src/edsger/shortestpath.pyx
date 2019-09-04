@@ -6,7 +6,7 @@
 
 cimport numpy as cnp
 import numpy as np
-from scipy.sparse import csr_matrix
+from scipy.sparse import csr_matrix, csc_matrix
 from cython.parallel import prange
 
 from edsger.priority_queue_binary_heap cimport *
@@ -34,6 +34,29 @@ cpdef convert_sorted_graph_to_csr(
         dtype=UITYPE)
 
     return csr_mat.indptr.astype(UITYPE)
+
+
+cpdef convert_sorted_graph_to_csc(
+    tail_nodes,
+    head_nodes,
+    n_vertices):
+    """ Compute the CSC representation of the node-node adjacency matrix of the 
+    graph.
+
+    assumption
+    ==========
+    * edges are sorted by head vertices first and tail vertices second and 
+      and edges have been reindexed
+    """
+
+    edge_count = head_nodes.shape[0]
+    data = np.ones(edge_count, dtype=UITYPE)
+    csc_mat = csc_matrix(
+        (data, (tail_nodes, head_nodes)),
+        shape=(n_vertices, n_vertices),
+        dtype=UITYPE)
+
+    return csc_mat.indptr.astype(UITYPE)
 
 
 cpdef cnp.ndarray path_length(

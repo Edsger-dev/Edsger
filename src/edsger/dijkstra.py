@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 
-# from edsger.shortestpath import convert_sorted_graph_to_csr, path_length
+from edsger.shortestpath import convert_sorted_graph_to_csr
+from edsger.commons import UITYPE_PY
 
 
 class Path(object):
@@ -11,12 +12,37 @@ class Path(object):
         source="source",
         target="target",
         weight="weight",
+        orientation="one-to-all",
         check_edges=True,
     ):
+        # load the edges
         if check_edges:
             self._check_edges(edges_df, source, target, weight)
         self._edges = edges_df[[source, target, weight]]
+        self.n_edges = len(self._edges)
+
+        # reindex the vertices
         self._vertices = self._permute_graph(source, target)
+        self.n_vertices = len(self._vertices)
+
+        # prepare the data
+        if orientation == "one-to-all":
+            self._edges.sort_values(by=[source, target], inplace=True)
+        else:
+            self._edges.sort_values(by=[target, source], inplace=True)
+        self._tail_vert = self._edges[source].values.astype(UITYPE_PY)
+        self._head_vert = self._edges[target].values.astype(UITYPE_PY)
+        self._edge_weights = self._edges[weight].values
+
+        self._check_orientation(orientation)
+        if orientation == "one-to-all":
+            self._indptr = convert_sorted_graph_to_csr(
+                self._tail_vert, self._head_vert, self.n_vertices
+            )
+        else:
+            self._indptr = convert_sorted_graph_to_csc(
+                self._tail_vert, self._head_vert, self.n_vertices
+            )
 
     def _check_edges(self, edges_df, source, target, weight):
 
@@ -102,3 +128,9 @@ class Path(object):
         self._edges.index.name = "index"
 
         return vertices
+
+    def _check_orientation(self, orientation):
+        if orientation not in ["one-to-all", "all-to-one"]:
+            raise ValueError(
+                f"orientation should be either 'one-to-all' or 'all-to-one'"
+            )
