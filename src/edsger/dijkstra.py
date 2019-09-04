@@ -73,6 +73,7 @@ class Path(object):
             }
         )
         vertices["vert_idx_new"] = vertices.index
+        vertices.index.name = "index"
 
         self._edges = pd.merge(
             self._edges,
@@ -96,6 +97,8 @@ class Path(object):
 
         vertices.rename(columns={"vert_idx": "vert_idx_old"}, inplace=True)
         vertices.reset_index(drop=True, inplace=True)
+
         vertices.index.name = "index"
+        self._edges.index.name = "index"
 
         return vertices

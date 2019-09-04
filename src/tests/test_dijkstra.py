@@ -68,19 +68,17 @@ def test_permute_graph():
         }
     )
     path = Path(edges_df)
-    # vert_idx_old  vert_idx_new
-    # index
-    # 0                 5             0
-    # 1                10             1
-    # 2                20             2
-    # 3                30             3
-    #    weight  source  target
-    # 0     1.0       0       1
-    # 1     2.0       0       2
-    # 2     0.0       1       2
-    # 3     2.0       1       3
-    # 4     1.0       2       3
-
-    print(path._vertices)
-    print(path._edges)
-    assert True
+    vertices_ref = pd.DataFrame(
+        data={"vert_idx_old": [5, 10, 20, 30], "vert_idx_new": [0, 1, 2, 3]}
+    )
+    vertices_ref.index.name = "index"
+    edges_ref = pd.DataFrame(
+        data={
+            "source": [0, 0, 1, 1, 2],
+            "target": [1, 2, 2, 3, 3],
+            "weight": [1.0, 2.0, 0.0, 2.0, 1.0],
+        }
+    )
+    edges_ref.index.name = "index"
+    pd.testing.assert_frame_equal(vertices_ref, path._vertices, check_like=True)
+    pd.testing.assert_frame_equal(edges_ref, path._edges, check_like=True)
