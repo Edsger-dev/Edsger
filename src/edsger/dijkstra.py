@@ -1,7 +1,10 @@
 import numpy as np
 import pandas as pd
 
-from edsger.shortestpath import convert_sorted_graph_to_csr, convert_sorted_graph_to_csc
+from edsger.shortestpath import (
+    convert_sorted_graph_to_csr,
+    convert_sorted_graph_to_csc,
+)
 from edsger.commons import UITYPE_PY, DTYPE_PY
 
 
@@ -36,7 +39,8 @@ class Path(object):
         self._edge_weights = self._edges[weight].values.astype(DTYPE_PY)
 
         self._check_orientation(orientation)
-        if orientation == "one-to-all":
+        self._orientation = orientation
+        if self._orientation == "one-to-all":
             self._indptr = convert_sorted_graph_to_csr(
                 self._tail_vert, self._head_vert, self.n_vertices
             )
@@ -51,13 +55,19 @@ class Path(object):
             raise TypeError("edges_df should be a pandas DataFrame")
 
         if source not in edges_df:
-            raise KeyError(f"'{source}' column not found in graph edges dataframe")
+            raise KeyError(
+                f"'{source}' column not found in graph edges dataframe"
+            )
 
         if target not in edges_df:
-            raise KeyError(f"'{target}' column not found in graph edges dataframe")
+            raise KeyError(
+                f"'{target}' column not found in graph edges dataframe"
+            )
 
         if weight not in edges_df:
-            raise KeyError(f"'{weight}' column not found in graph edges dataframe")
+            raise KeyError(
+                f"'{weight}' column not found in graph edges dataframe"
+            )
 
         if edges_df[[source, target, weight]].isna().any().any():
             raise ValueError(
@@ -124,6 +134,7 @@ class Path(object):
 
         vertices.rename(columns={"vert_idx": "vert_idx_old"}, inplace=True)
         vertices.reset_index(drop=True, inplace=True)
+        vertices.sort_values(by="vert_idx_new", inplace=True)
 
         vertices.index.name = "index"
         self._edges.index.name = "index"
@@ -135,3 +146,27 @@ class Path(object):
             raise ValueError(
                 f"orientation should be either 'one-to-all' or 'all-to-one'"
             )
+
+    def run(self, vertex):
+
+        if vertex not in self._vertices.vert_idx_old.values:
+            raise ValueError(f"vertex {vertex} not found in graph")
+        vertex_new = self._vertices.loc[
+            self._vertices.vert_idx_old == vertex, "vert_idx_new"
+        ]
+
+        if self._orientation == "one-to-all":
+            path_lengths = path_length(
+                self._head_vert,
+                self._indptr,
+                self._edge_weights,
+                vertex_new,
+                self.n_vertices,
+                n_jobs=-1,
+            )
+
+        self._vertices["length"] = path_lengths
+
+        return self._vertices[["vert_idx_old", "length"]].sort_values(
+            by="vert_idx_old"
+        )
