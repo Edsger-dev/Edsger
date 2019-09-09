@@ -40,16 +40,27 @@ def test_load_edges(braess):
     with pytest.raises(TypeError, match=r"should be of numeric type"):
         Path(edges_df.astype({"weight": str}))
     with pytest.raises(ValueError, match=r"should not be negative"):
-        Path(pd.concat([edges_df[["source", "target"]], edges_df.weight * -1], axis=1))
+        Path(
+            pd.concat(
+                [edges_df[["source", "target"]], edges_df.weight * -1], axis=1
+            )
+        )
     with pytest.raises(ValueError, match=r"should be finite"):
         Path(
             pd.concat(
-                [edges_df[["source", "target"]], edges_df.weight.replace(1.0, np.inf)],
+                [
+                    edges_df[["source", "target"]],
+                    edges_df.weight.replace(1.0, np.inf),
+                ],
                 axis=1,
             )
         )
     with pytest.raises(ValueError, match=r"no parallel edges in the graph"):
-        Path(pd.concat([edges_df, edges_df.iloc[-2:-1]], axis=0, ignore_index=True))
+        Path(
+            pd.concat(
+                [edges_df, edges_df.iloc[-2:-1]], axis=0, ignore_index=True
+            )
+        )
     with pytest.raises(ValueError, match=r"no loop in the graph"):
         Path(
             edges_df.append(
@@ -89,3 +100,12 @@ def test_check_orientation(braess):
     edges_df = braess
     with pytest.raises(ValueError, match=r"orientation should be either"):
         Path(edges_df, orientation="onetoall")
+
+
+def test_run(braess):
+
+    edges_df = braess
+
+    path = Path(edges_df, orientation="one-to-all")
+    with pytest.raises(ValueError, match=r"not found in graph"):
+        path.run(4)

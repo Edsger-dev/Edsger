@@ -1,3 +1,5 @@
+# TODO : argument permute_graph bool?
+
 import numpy as np
 import pandas as pd
 
@@ -8,7 +10,7 @@ from edsger.shortestpath import (
 from edsger.commons import UITYPE_PY, DTYPE_PY
 
 
-class Path(object):
+class Path:
     def __init__(
         self,
         edges_df,
