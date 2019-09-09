@@ -30,6 +30,7 @@ class Path(object):
             self._edges.sort_values(by=[source, target], inplace=True)
         else:
             self._edges.sort_values(by=[target, source], inplace=True)
+
         self._tail_vert = self._edges[source].values.astype(UITYPE_PY)
         self._head_vert = self._edges[target].values.astype(UITYPE_PY)
         self._edge_weights = self._edges[weight].values.astype(DTYPE_PY)
