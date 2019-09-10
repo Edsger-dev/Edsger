@@ -59,7 +59,7 @@ cpdef convert_sorted_graph_to_csc(
     return csc_mat.indptr.astype(UITYPE)
 
 
-cpdef cnp.ndarray path_length(
+cpdef cnp.ndarray path_length_from(
     UITYPE_t[:] csr_indices,
     UITYPE_t[:] csr_indptr,
     DTYPE_t[:] edge_weights,

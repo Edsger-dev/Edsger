@@ -1,4 +1,5 @@
 # TODO : argument permute_graph bool?
+# QUESTION : maybe there can be a loop in the graph?
 
 import numpy as np
 import pandas as pd
@@ -6,6 +7,7 @@ import pandas as pd
 from edsger.shortestpath import (
     convert_sorted_graph_to_csr,
     convert_sorted_graph_to_csc,
+    path_length_from,
 )
 from edsger.commons import UITYPE_PY, DTYPE_PY
 
@@ -46,10 +48,12 @@ class Path:
             self._indptr = convert_sorted_graph_to_csr(
                 self._tail_vert, self._head_vert, self.n_vertices
             )
+            del self._tail_vert
         else:
             self._indptr = convert_sorted_graph_to_csc(
                 self._tail_vert, self._head_vert, self.n_vertices
             )
+            del self._head_vert
 
     def _check_edges(self, edges_df, source, target, weight):
 
@@ -158,7 +162,7 @@ class Path:
         ]
 
         if self._orientation == "one-to-all":
-            path_lengths = path_length(
+            path_lengths = path_length_from(
                 self._head_vert,
                 self._indptr,
                 self._edge_weights,
