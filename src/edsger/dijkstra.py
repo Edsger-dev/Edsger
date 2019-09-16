@@ -9,7 +9,7 @@ from edsger.shortestpath import (
     convert_sorted_graph_to_csc,
     path_length_from,
 )
-from edsger.commons import UITYPE_PY, DTYPE_PY
+from edsger.commons import UITYPE_PY, DTYPE_PY, Timer
 
 
 class Path:
@@ -22,26 +22,48 @@ class Path:
         orientation="one-to-all",
         check_edges=True,
     ):
+        self.time = {}
+
+        t = Timer()
+        t.start()
         # load the edges
         if check_edges:
             self._check_edges(edges_df, source, target, weight)
         self._edges = edges_df[[source, target, weight]]
         self.n_edges = len(self._edges)
+        t.stop()
+        self.time["load the edges"] = t.interval
 
         # reindex the vertices
+        t = Timer()
+        t.start()
         self._vertices = self._permute_graph(source, target)
         self.n_vertices = len(self._vertices)
+        t.stop()
+        self.time["reindex the vertices"] = t.interval
 
-        # prepare the data
+        # sort the edges
+        t = Timer()
+        t.start()
         if orientation == "one-to-all":
             self._edges.sort_values(by=[source, target], inplace=True)
         else:
             self._edges.sort_values(by=[target, source], inplace=True)
+        t.stop()
+        self.time["sort the edges"] = t.interval
 
+        # cast the types
+        t = Timer()
+        t.start()
         self._tail_vert = self._edges[source].values.astype(UITYPE_PY)
         self._head_vert = self._edges[target].values.astype(UITYPE_PY)
         self._edge_weights = self._edges[weight].values.astype(DTYPE_PY)
+        t.stop()
+        self.time["cast the types"] = t.interval
 
+        # convert to CSR/CSC
+        t = Timer()
+        t.start()
         self._check_orientation(orientation)
         self._orientation = orientation
         if self._orientation == "one-to-all":
@@ -54,6 +76,8 @@ class Path:
                 self._tail_vert, self._head_vert, self.n_vertices
             )
             del self._head_vert
+        t.stop()
+        self.time["convert to CSR/CSC"] = t.interval
 
     def _check_edges(self, edges_df, source, target, weight):
 
@@ -61,27 +85,18 @@ class Path:
             raise TypeError("edges_df should be a pandas DataFrame")
 
         if source not in edges_df:
-            raise KeyError(
-                f"'{source}' column not found in graph edges dataframe"
-            )
+            raise KeyError(f"'{source}' column not found in graph edges dataframe")
 
         if target not in edges_df:
-            raise KeyError(
-                f"'{target}' column not found in graph edges dataframe"
-            )
+            raise KeyError(f"'{target}' column not found in graph edges dataframe")
 
         if weight not in edges_df:
-            raise KeyError(
-                f"'{weight}' column not found in graph edges dataframe"
-            )
+            raise KeyError(f"'{weight}' column not found in graph edges dataframe")
 
         if edges_df[[source, target, weight]].isna().any().any():
             raise ValueError(
                 " ".join(
-                    [
-                        f"edges_df[[{source}, {target}, {weight}]] ",
-                        "should not have missing values",
-                    ]
+                    [f"edges_df[[{source}, {target}, {weight}]] ", "should not have missing values"]
                 )
             )
 
@@ -109,11 +124,7 @@ class Path:
         """
 
         vertices = pd.DataFrame(
-            data={
-                "vert_idx": np.union1d(
-                    self._edges[source].values, self._edges[target].values
-                )
-            }
+            data={"vert_idx": np.union1d(self._edges[source].values, self._edges[target].values)}
         )
         vertices["vert_idx_new"] = vertices.index
         vertices.index.name = "index"
@@ -149,18 +160,22 @@ class Path:
 
     def _check_orientation(self, orientation):
         if orientation not in ["one-to-all", "all-to-one"]:
-            raise ValueError(
-                f"orientation should be either 'one-to-all' or 'all-to-one'"
-            )
+            raise ValueError(f"orientation should be either 'one-to-all' or 'all-to-one'")
 
     def run(self, vertex):
 
+        # check the source/target vertex
+        t = Timer()
+        t.start()
         if vertex not in self._vertices.vert_idx_old.values:
             raise ValueError(f"vertex {vertex} not found in graph")
-        vertex_new = self._vertices.loc[
-            self._vertices.vert_idx_old == vertex, "vert_idx_new"
-        ]
+        vertex_new = self._vertices.loc[self._vertices.vert_idx_old == vertex, "vert_idx_new"]
+        t.stop()
+        self.time["check the source/target vertex"] = t.interval
 
+        # compute path length
+        t = Timer()
+        t.start()
         if self._orientation == "one-to-all":
             path_lengths = path_length_from(
                 self._head_vert,
@@ -170,9 +185,17 @@ class Path:
                 self.n_vertices,
                 n_jobs=-1,
             )
+        t.stop()
+        self.time["compute path length"] = t.interval
 
-        self._vertices["length"] = path_lengths
+        # reorder results
+        t = Timer()
+        t.start()
+        self._vertices["path_length"] = path_lengths
+        path_length = self._vertices[["vert_idx_old", "path_length"]].sort_values(by="vert_idx_old")
+        path_length.set_index("vert_idx_old", drop=True, inplace=True)
+        path_length.rename_axis(None, inplace=True)
+        t.stop()
+        self.time["reorder results"] = t.interval
 
-        return self._vertices[["vert_idx_old", "length"]].sort_values(
-            by="vert_idx_old"
-        )
+        return path_length
