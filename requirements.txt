@@ -4,5 +4,6 @@ pandas
 scipy
 pytest
 pytest-cov
+flake8
 black
 psutil
