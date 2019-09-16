@@ -85,18 +85,27 @@ class Path:
             raise TypeError("edges_df should be a pandas DataFrame")
 
         if source not in edges_df:
-            raise KeyError(f"'{source}' column not found in graph edges dataframe")
+            raise KeyError(
+                f"'{source}' column not found in graph edges dataframe"
+            )
 
         if target not in edges_df:
-            raise KeyError(f"'{target}' column not found in graph edges dataframe")
+            raise KeyError(
+                f"'{target}' column not found in graph edges dataframe"
+            )
 
         if weight not in edges_df:
-            raise KeyError(f"'{weight}' column not found in graph edges dataframe")
+            raise KeyError(
+                f"'{weight}' column not found in graph edges dataframe"
+            )
 
         if edges_df[[source, target, weight]].isna().any().any():
             raise ValueError(
                 " ".join(
-                    [f"edges_df[[{source}, {target}, {weight}]] ", "should not have missing values"]
+                    [
+                        f"edges_df[[{source}, {target}, {weight}]] ",
+                        "should not have missing values",
+                    ]
                 )
             )
 
@@ -124,7 +133,11 @@ class Path:
         """
 
         vertices = pd.DataFrame(
-            data={"vert_idx": np.union1d(self._edges[source].values, self._edges[target].values)}
+            data={
+                "vert_idx": np.union1d(
+                    self._edges[source].values, self._edges[target].values
+                )
+            }
         )
         vertices["vert_idx_new"] = vertices.index
         vertices.index.name = "index"
@@ -160,7 +173,9 @@ class Path:
 
     def _check_orientation(self, orientation):
         if orientation not in ["one-to-all", "all-to-one"]:
-            raise ValueError(f"orientation should be either 'one-to-all' or 'all-to-one'")
+            raise ValueError(
+                f"orientation should be either 'one-to-all' or 'all-to-one'"
+            )
 
     def run(self, vertex):
 
@@ -169,7 +184,9 @@ class Path:
         t.start()
         if vertex not in self._vertices.vert_idx_old.values:
             raise ValueError(f"vertex {vertex} not found in graph")
-        vertex_new = self._vertices.loc[self._vertices.vert_idx_old == vertex, "vert_idx_new"]
+        vertex_new = self._vertices.loc[
+            self._vertices.vert_idx_old == vertex, "vert_idx_new"
+        ]
         t.stop()
         self.time["check the source/target vertex"] = t.interval
 
@@ -192,7 +209,9 @@ class Path:
         t = Timer()
         t.start()
         self._vertices["path_length"] = path_lengths
-        path_length = self._vertices[["vert_idx_old", "path_length"]].sort_values(by="vert_idx_old")
+        path_length = self._vertices[
+            ["vert_idx_old", "path_length"]
+        ].sort_values(by="vert_idx_old")
         path_length.set_index("vert_idx_old", drop=True, inplace=True)
         path_length.rename_axis(None, inplace=True)
         t.stop()
