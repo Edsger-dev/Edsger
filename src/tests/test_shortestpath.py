@@ -76,7 +76,7 @@ def test_convert_02():
 
 
 def test_shortestpath_01(one_edge_01):
-    """ Test of the basic single-source shortest path algorithm on a one-edge 
+    """ Test of the basic single-source shortest path algorithm on a one-edge
     network.
     """
 
